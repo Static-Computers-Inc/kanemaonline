@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/data/countries.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/screens/generics/choose_country_popup.dart';

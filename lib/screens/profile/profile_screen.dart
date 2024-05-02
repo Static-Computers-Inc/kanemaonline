@@ -17,6 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: black,
       appBar: AppBar(
         backgroundColor: black,
+        title: const Text("Profile≈"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -50,6 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Icon(
                     CupertinoIcons.pen,
                     color: white,
+                    size: 13,
                   )
                 ],
               ),
@@ -61,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
               height: 0.6,
-              color: white.withOpacity(0.4),
+              color: white.withOpacity(0.2),
             ),
 
             //// account actions

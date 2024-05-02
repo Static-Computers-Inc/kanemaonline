@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
 import 'package:kanemaonline/screens/screens.dart';
@@ -22,7 +21,7 @@ class _WrapperState extends State<Wrapper> {
       return Center(
         child: CupertinoActivityIndicator(
           color: white,
-          radius: 20,
+          radius: 15,
         ),
       );
     }

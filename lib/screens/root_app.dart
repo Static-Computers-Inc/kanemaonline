@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/screens/screens.dart';
+import 'dart:io' as io;
 
 class RootApp extends StatefulWidget {
   const RootApp({super.key});
@@ -56,10 +57,12 @@ class _RootAppState extends State<RootApp> {
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.only(
+              padding: EdgeInsets.only(
                 left: 25,
                 right: 25,
-                bottom: 10,
+                bottom: io.Platform.isIOS
+                    ? MediaQuery.of(context).padding.bottom
+                    : MediaQuery.of(context).padding.bottom + 10,
                 top: 20,
               ),
               decoration: BoxDecoration(
