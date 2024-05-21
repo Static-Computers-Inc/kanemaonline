@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
+import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
+import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/screens/videos/all_videos_search_screen.dart';
 import 'package:kanemaonline/widgets/error_widget.dart';
 import 'package:kanemaonline/widgets/hero_search_appbar.dart';
@@ -57,7 +60,7 @@ class _VideosScreenState extends State<VideosScreen> {
           builder: (context, value, child) {
             if (!value.isLoading) {
               _generatePalette(
-                image: value.vods[7]['thumb_nail'],
+                image: value.vods[0]['thumb_nail'],
               );
             }
             return value.isLoading
@@ -81,7 +84,8 @@ class _VideosScreenState extends State<VideosScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildHeroWidget(
-                                imageUrl: value.vods[7]['thumb_nail']),
+                              mediaInfo: value.vods[0],
+                            ),
                             _buildTrendingWidget(trending: value.vods),
                             _buildVideosWidget(trending: value.vods),
                             //
@@ -98,11 +102,45 @@ class _VideosScreenState extends State<VideosScreen> {
     );
   }
 
-  Widget _buildHeroWidget({required String imageUrl}) {
+  Widget _buildHeroWidget({
+    required Map<dynamic, dynamic> mediaInfo,
+  }) {
     return HeroWidget(
-      imageUrl: imageUrl,
-      playAction: () {},
-      myListAction: () {},
+      itemId: "",
+      imageUrl: mediaInfo['thumb_nail'],
+      playAction: () {
+        WatchBridgeFunctions.watchVideoBridge(
+          watchVideo: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => VideoPlayerScreen(
+                  videoUrl: mediaInfo['stream_key'],
+                  title: mediaInfo['name'],
+                ),
+              ),
+            );
+          },
+          packages: [
+            'KanemaFlex',
+            'KanemaSupa',
+            mediaInfo['name'],
+          ],
+          contentName: mediaInfo['name'],
+          thumbnail: mediaInfo['thumb_nail'],
+          price: mediaInfo['price'],
+        );
+      },
+      myListAction: () {
+        Provider.of<MyListProvider>(context, listen: false).addToMyList(
+          id: mediaInfo['id'],
+          name: mediaInfo['name'],
+          description: mediaInfo['description'],
+          thumbnail: mediaInfo['thumb_nail'],
+          mediaUrl: mediaInfo['stream_key'],
+          mediaType: 'video',
+        );
+      },
       infoAction: () {},
     );
   }
@@ -122,7 +160,31 @@ class _VideosScreenState extends State<VideosScreen> {
             ),
           ),
         ),
-        TrendingListSMWidget(trending: trending, clickableAction: (data) {}),
+        TrendingListSMWidget(
+            trending: trending,
+            clickableAction: (data) {
+              WatchBridgeFunctions.watchVideoBridge(
+                watchVideo: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        videoUrl: data['stream_key'],
+                        title: data['name'],
+                      ),
+                    ),
+                  );
+                },
+                packages: [
+                  'KanemaFlex',
+                  'KanemaSupa',
+                  data['name'],
+                ],
+                contentName: data['name'],
+                thumbnail: data['thumb_nail'],
+                price: data['price'],
+              );
+            }),
       ],
     );
   }
@@ -146,12 +208,12 @@ class _VideosScreenState extends State<VideosScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   CupertinoPageRoute(
-                  //     builder: (context) => const AllEventsSearchScreen(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => const AllVideosSearchScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   "See All",
@@ -165,7 +227,31 @@ class _VideosScreenState extends State<VideosScreen> {
             ],
           ),
         ),
-        TrendingListSMWidget(trending: trending, clickableAction: (data) {}),
+        TrendingListSMWidget(
+            trending: trending,
+            clickableAction: (data) {
+              WatchBridgeFunctions.watchVideoBridge(
+                watchVideo: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        videoUrl: data['stream_key'],
+                        title: data['name'],
+                      ),
+                    ),
+                  );
+                },
+                packages: [
+                  'KanemaFlex',
+                  'KanemaSupa',
+                  data['name'],
+                ],
+                contentName: data['name'],
+                thumbnail: data['thumb_nail'],
+                price: data['price'],
+              );
+            }),
       ],
     );
   }

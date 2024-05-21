@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:video_player/video_player.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class EventsPlayer extends StatefulWidget {
@@ -27,7 +27,7 @@ class EventsPlayer extends StatefulWidget {
 }
 
 class _EventsPlayerState extends State<EventsPlayer> {
-  late CachedVideoPlayerController controller;
+  late VideoPlayerController controller;
   VolumeController volumeController = VolumeController();
   ScreenBrightness brightnessContrroller = ScreenBrightness();
 
@@ -49,7 +49,7 @@ class _EventsPlayerState extends State<EventsPlayer> {
 
   @override
   void initState() {
-    controller = CachedVideoPlayerController.network(widget.streamKey);
+    controller = VideoPlayerController.network(widget.streamKey);
     controller.initialize().then((value) {
       controller.play();
       controller.addListener(videoPlaybackListener);
@@ -170,7 +170,7 @@ class _EventsPlayerState extends State<EventsPlayer> {
                         panEnabled: false,
                         maxScale: 2,
                         minScale: 0.4,
-                        child: CachedVideoPlayer(controller),
+                        child: VideoPlayer(controller),
                       ),
                     )
                   : CupertinoActivityIndicator(

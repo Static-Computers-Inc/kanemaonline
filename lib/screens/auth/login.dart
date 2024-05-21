@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/constants/input_decorations.dart';
+import 'package:kanemaonline/helpers/fx/providers_init.dart';
 import 'package:kanemaonline/screens/screens.dart';
 import 'package:kanemaonline/api/auth_api.dart';
 import 'package:kanemaonline/widgets/button.dart';
-import 'package:kanemaonline/wrapper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,13 +37,13 @@ class _LoginScreenState extends State<LoginScreen> {
         password: passwordController.text.trim(),
       );
 
-      Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,
         CupertinoPageRoute(
-          builder: (context) => const Wrapper(),
+          builder: (context) => const RootApp(),
         ),
       );
+      ProvidersInit.refreshProviders(context: context);
     } catch (e) {
       debugPrint(e.toString());
       return;

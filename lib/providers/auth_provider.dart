@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kanemaonline/main.dart';
+import 'package:kanemaonline/providers/my_list_provider.dart';
+import 'package:kanemaonline/providers/user_info_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -81,8 +85,6 @@ class AuthProvider with ChangeNotifier {
     _isAuthLoading = true;
     notifyListeners();
 
-    await Future.delayed(const Duration(seconds: 3));
-
     // Get shared preferences instance.
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -93,6 +95,14 @@ class AuthProvider with ChangeNotifier {
 
     // Update the logged in state based on the presence of access and refresh tokens.
     _isLoggedIn = _accessToken.isNotEmpty && _refreshToken.isNotEmpty;
+
+    //update providers that rely on this
+    Provider.of<UserInfoProvider>(navigatorKey.currentState!.context,
+            listen: false)
+        .refreshUserData();
+    Provider.of<MyListProvider>(navigatorKey.currentState!.context,
+            listen: false)
+        .init();
 
     // Set loading state to false and notify listeners.
     _isAuthLoading = false;

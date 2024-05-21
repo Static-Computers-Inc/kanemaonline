@@ -3,8 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
+import 'package:kanemaonline/screens/livetv/all_tvs_search_screen.dart';
 import 'package:kanemaonline/screens/players/live_tvs_player.dart';
+import 'package:kanemaonline/widgets/hero_search_appbar.dart';
 import 'package:kanemaonline/widgets/scaffold_wrapper.dart';
 import 'package:provider/provider.dart';
 
@@ -22,33 +25,12 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
       child: Scaffold(
         backgroundColor: black,
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: white.withOpacity(0),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: AspectRatio(
-                aspectRatio: 1 / 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: black.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset(
-                      "assets/svg/search.svg",
-                      color: white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-          ],
-        ),
+        appBar: HeroSearchAppBar.appBar(searchOnTap: () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => const AllTVsSearchScreen()));
+        }),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,10 +72,37 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                SvgPicture.asset(
-                                  "assets/svg/play_special.svg",
-                                  // color: white,
-                                  width: 70,
+                                GestureDetector(
+                                  onTap: () {
+                                    WatchBridgeFunctions.watchTVBridge(
+                                      contentName: value.tvs[index]['name'],
+                                      price: value.tvs[index]['price'],
+                                      watchTV: () {
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                                LiveTvsPlayerScreen(
+                                              name: value.tvs[index]['name'],
+                                              streamKey: value.tvs[index]
+                                                  ['stream_key'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      packages: [
+                                        'Kiliye Kiliye',
+                                        'KanemaSupa',
+                                        value.tvs[index]['name'],
+                                      ],
+                                      thumbnail: value.tvs[index]['thumb_nail'],
+                                    );
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/play_special.svg",
+                                    // color: white,
+                                    width: 70,
+                                  ),
                                 ),
                                 const SizedBox(height: 30),
                                 Text(
@@ -134,15 +143,27 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => LiveTvsPlayerScreen(
-                                    name: tvsProvider.tvs[index]['name'],
-                                    streamKey: tvsProvider.tvs[index]
-                                        ['stream_key'],
-                                  ),
-                                ),
+                              WatchBridgeFunctions.watchTVBridge(
+                                contentName: tvsProvider.tvs[index]['name'],
+                                price: tvsProvider.tvs[index]['price'],
+                                packages: [
+                                  'Kiliye Kiliye',
+                                  'KanemaSupa',
+                                  tvsProvider.tvs[index]['name'],
+                                ],
+                                watchTV: () {
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (context) => LiveTvsPlayerScreen(
+                                        name: tvsProvider.tvs[index]['name'],
+                                        streamKey: tvsProvider.tvs[index]
+                                            ['stream_key'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                thumbnail: tvsProvider.tvs[index]['thumb_nail'],
                               );
                             },
                             child: Container(

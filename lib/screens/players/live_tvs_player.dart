@@ -3,7 +3,7 @@
 import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:cached_video_player/cached_video_player.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +14,7 @@ import 'package:multi_value_listenable_builder/multi_value_listenable_builder.da
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:video_player/video_player.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class LiveTvsPlayerScreen extends StatefulWidget {
@@ -30,16 +31,19 @@ class LiveTvsPlayerScreen extends StatefulWidget {
 }
 
 class _LiveTvsPlayerScreenState extends State<LiveTvsPlayerScreen> {
-  late CachedVideoPlayerController controller;
+  late VideoPlayerController controller;
   VolumeController volumeController = VolumeController();
   ScreenBrightness brightnessContrroller = ScreenBrightness();
 
   //values,
-  ValueNotifier<List<DeviceOrientation>> deviceOrientation = ValueNotifier(
-      [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+  ValueNotifier<List<DeviceOrientation>> deviceOrientation = ValueNotifier([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   ValueNotifier<bool> isVideoPaused = ValueNotifier(false);
-  ValueNotifier<Duration> videoDuration =
-      ValueNotifier(const Duration(seconds: 0));
+  ValueNotifier<Duration> videoDuration = ValueNotifier(
+    const Duration(seconds: 0),
+  );
 
   ValueNotifier<double> playBackDuration = ValueNotifier(0.0);
   ValueNotifier<double> volume = ValueNotifier(0.0);
@@ -52,7 +56,7 @@ class _LiveTvsPlayerScreenState extends State<LiveTvsPlayerScreen> {
 
   @override
   void initState() {
-    controller = CachedVideoPlayerController.network(widget.streamKey);
+    controller = VideoPlayerController.network(widget.streamKey);
     controller.initialize().then((value) {
       controller.play();
       controller.addListener(videoPlaybackListener);
@@ -150,6 +154,7 @@ class _LiveTvsPlayerScreenState extends State<LiveTvsPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(controller.value.isInitialized.toString());
     return GestureDetector(
       onTap: () {
         if (showControls.value) {
@@ -162,77 +167,75 @@ class _LiveTvsPlayerScreenState extends State<LiveTvsPlayerScreen> {
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        body: Stack(
-          children: [
-            Center(
-              child: controller.value.isInitialized
-                  ? AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
-                      child: InteractiveViewer(
-                        clipBehavior: Clip.none,
-                        panEnabled: false,
-                        maxScale: 2,
-                        minScale: 0.4,
-                        child: CachedVideoPlayer(controller),
-                      ),
-                    )
-                  : CupertinoActivityIndicator(
-                      color: white,
-                      radius: 15,
-                    ),
-            ),
-            // Positioned(child: actions()),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              top: 0,
-              child: actions(),
-            ),
+        body: OrientationBuilder(builder: (context, orientation) {
+          if (orientation == Orientation.landscape) {
+            SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                overlays: []);
+          } else {
+            SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+          }
 
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: toolBar(),
-            ),
-            Positioned(
-                bottom: 30,
-                left: 40,
-                child: ValueListenableBuilder(
-                    valueListenable: showControls,
-                    builder: (context, value, _) {
-                      return AnimatedOpacity(
-                        opacity: value ? 1 : 0,
-                        duration: const Duration(milliseconds: 300),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                              color: red,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                "assets/svg/live_signals.svg",
-                                color: white,
-                              ),
-                              const SizedBox(width: 5),
-                              Text(
-                                "Live".toUpperCase(),
-                                style: TextStyle(
-                                  color: white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              )
-                            ],
-                          ),
+          return Stack(
+            children: [
+              Center(
+                child: controller.value.isInitialized
+                    ? AspectRatio(
+                        aspectRatio: controller.value.aspectRatio,
+                        child: InteractiveViewer(
+                          clipBehavior: Clip.none,
+                          panEnabled: false,
+                          maxScale: 2,
+                          minScale: 0.4,
+                          child: VideoPlayer(controller),
                         ),
-                      );
-                    }))
-          ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
+                      )
+                    : CupertinoActivityIndicator(
+                        color: white,
+                        radius: 15,
+                      ),
+              ),
+              // Positioned(child: actions()),
+              Positioned(
+                // bottom: 0,
+                // left: 0,
+                // right: 0,
+                // top: 0,
+                child: actions(),
+              ),
+
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: toolBar(),
+              ),
+
+              Positioned(
+                  bottom: 30,
+                  right: 40,
+                  child: ValueListenableBuilder(
+                      valueListenable: showControls,
+                      builder: (context, value, _) {
+                        return AnimatedOpacity(
+                          opacity: value ? 1 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: OrientationBuilder(
+                              builder: (context, orientation) {
+                            return SizedBox(
+                              width: orientation == Orientation.portrait
+                                  ? MediaQuery.of(context).size.height * 0.13
+                                  : MediaQuery.of(context).size.width * 0.2,
+                              child: Image.asset(
+                                "assets/images/logo-white.png",
+                              ),
+                            );
+                          }),
+                        );
+                      }))
+            ],
+          );
+        }), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
@@ -254,9 +257,9 @@ class _LiveTvsPlayerScreenState extends State<LiveTvsPlayerScreen> {
                         vertical: kToolbarHeight,
                         horizontal: 15,
                       )
-                    : EdgeInsets.symmetric(
+                    : const EdgeInsets.symmetric(
                         vertical: 25,
-                        horizontal: MediaQuery.of(context).padding.left,
+                        horizontal: 35,
                       ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -274,10 +277,28 @@ class _LiveTvsPlayerScreenState extends State<LiveTvsPlayerScreen> {
                   children: [
                     orientation.contains(DeviceOrientation.portraitUp)
                         ? Container()
-                        : SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.1,
-                            child: Image.asset(
-                              "assets/images/logo-white.png",
+                        : Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                                color: red,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/svg/live_signals.svg",
+                                  color: white,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  "Live".toUpperCase(),
+                                  style: TextStyle(
+                                    color: white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                     const SizedBox(width: 20),

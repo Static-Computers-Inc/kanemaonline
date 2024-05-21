@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/main.dart';
+import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
+import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/widgets/all_media_search_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -91,7 +93,29 @@ class _AllVideosSearchScreenState extends State<AllVideosSearchScreen> {
                   ),
                   itemBuilder: (context, index) {
                     return Bounceable(
-                      onTap: () => {},
+                      onTap: () => {
+                        WatchBridgeFunctions.watchLiveBridge(
+                          watchLive: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => VideoPlayerScreen(
+                                  title: results[index]['name'],
+                                  videoUrl: results[index]['stream_key'],
+                                ),
+                              ),
+                            );
+                          },
+                          packages: [
+                            "KanemaFlex",
+                            "KanemaSupa",
+                            results[index]['name']
+                          ],
+                          contentName: results[index]['name'],
+                          thumbnail: results[index]['thumb_nail'],
+                          price: results[index]['price'],
+                        )
+                      },
                       child: AspectRatio(
                         aspectRatio: 1 / 1.2,
                         child: Padding(

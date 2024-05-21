@@ -16,9 +16,20 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  @override
   TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void onSubmit() {
+    if (!formKey.currentState!.validate()) {
+      return;
+    } else {
+      // Register account
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +67,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Container(
                   // height: MediaQuery.of(context).size.height * 0.55,
                   decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      )),
+                    color: white,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Column(
@@ -74,99 +86,105 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          controller: emailController,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          decoration: authInputDecoration.copyWith(
-                            prefixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              child: SvgPicture.asset(
-                                "assets/svg/email.svg",
-                                width: 10,
-                                color: darkGrey,
-                              ),
-                            ),
-                            hintText: "Email Address",
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-
-                        ////////////
-
-                        TextFormField(
-                          controller: emailController,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          decoration: authInputDecoration.copyWith(
-                            prefixIcon: SizedBox(
-                              width: 16,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
+                        Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: emailController,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    countries.firstWhere((element) =>
-                                        element['code'] == widget.code)['flag'],
-                                    style: const TextStyle(fontSize: 18),
+                                decoration: authInputDecoration.copyWith(
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14),
+                                    child: SvgPicture.asset(
+                                      "assets/svg/email.svg",
+                                      width: 10,
+                                      color: darkGrey,
+                                    ),
+                                  ),
+                                  hintText: "Email Address",
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              ////////////
+                              TextFormField(
+                                controller: phoneNumberController,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                decoration: authInputDecoration.copyWith(
+                                  prefixIcon: SizedBox(
+                                    width: 16,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          countries.firstWhere((element) =>
+                                              element['code'] ==
+                                              widget.code)['flag'],
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: "Phone Number",
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: passwordController,
+                                obscureText: true,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                decoration: authInputDecoration.copyWith(
+                                  hintText: "Password",
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14),
+                                    child: SvgPicture.asset(
+                                      "assets/svg/password.svg",
+                                      width: 10,
+                                      color: darkGrey,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            hintText: "Phone Number",
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          decoration: authInputDecoration.copyWith(
-                            hintText: "Password",
-                            prefixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              child: SvgPicture.asset(
-                                "assets/svg/password.svg",
-                                width: 10,
-                                color: darkGrey,
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                controller: confirmPasswordController,
+                                obscureText: true,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                decoration: authInputDecoration.copyWith(
+                                  hintText: "Confirm Password",
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14),
+                                    child: SvgPicture.asset(
+                                      "assets/svg/password.svg",
+                                      width: 10,
+                                      color: darkGrey,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 20),
+                              const SizedBox(height: 20),
+                              Button(text: "Register", onTap: () {}),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          decoration: authInputDecoration.copyWith(
-                            hintText: "Confirm Password",
-                            prefixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              child: SvgPicture.asset(
-                                "assets/svg/password.svg",
-                                width: 10,
-                                color: darkGrey,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const SizedBox(height: 20),
-                        Button(text: "Register", onTap: () {}),
                         const SizedBox(height: 20),
                         Wrap(
                           children: [

@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bounceable/flutter_bounceable.dart';
+
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/live_events_provider.dart';
+import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/screens/live_events/all_events_search_screen.dart';
+
+import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/widgets/bot_toasts.dart';
 import 'package:kanemaonline/widgets/error_widget.dart';
 import 'package:kanemaonline/widgets/hero_search_appbar.dart';
@@ -31,8 +35,9 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
                 .events
                 .isEmpty) {
               BotToasts.showToast(
-                  message: "Please check your internet connection.",
-                  isError: true);
+                message: "Please check your internet connection.",
+                isError: true,
+              );
               return;
             }
             Navigator.push(
@@ -65,7 +70,7 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
                         child: Column(
                           children: [
                             _buildHeroWidget(
-                              imageUrl: value.events[0]['thumb_nail'],
+                              mediaInfo: value.events[0],
                             ),
                             _buildTrendingWidget(
                               trending: value.events.getRange(0, 5).toList(),
@@ -85,11 +90,41 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
     );
   }
 
-  Widget _buildHeroWidget({required String imageUrl}) {
+  Widget _buildHeroWidget({
+    required Map<dynamic, dynamic> mediaInfo,
+  }) {
     return HeroWidget(
-      imageUrl: imageUrl,
-      playAction: () {},
-      myListAction: () {},
+      itemId: "",
+      imageUrl: mediaInfo['thumb_nail'],
+      playAction: () {
+        WatchBridgeFunctions.watchLiveBridge(
+          watchLive: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => VideoPlayerScreen(
+                  title: mediaInfo['name'],
+                  videoUrl: mediaInfo['stream_key'],
+                ),
+              ),
+            );
+          },
+          packages: ["Kanema Events", "KanemaSupa", mediaInfo['name']],
+          contentName: mediaInfo['name'],
+          thumbnail: mediaInfo['thumb_nail'],
+          price: mediaInfo['price'],
+        );
+      },
+      myListAction: () {
+        Provider.of<MyListProvider>(context, listen: false).addToMyList(
+          id: mediaInfo['id'],
+          name: mediaInfo['name'],
+          description: mediaInfo['description'],
+          thumbnail: mediaInfo['thumb_nail'],
+          mediaUrl: mediaInfo['stream_key'],
+          mediaType: 'event',
+        );
+      },
       infoAction: () {},
     );
   }
@@ -109,7 +144,27 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
             ),
           ),
         ),
-        TrendingListSMWidget(trending: trending, clickableAction: (data) {}),
+        TrendingListSMWidget(
+            trending: trending,
+            clickableAction: (data) {
+              WatchBridgeFunctions.watchLiveBridge(
+                watchLive: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        title: data['name'],
+                        videoUrl: data['stream_key'],
+                      ),
+                    ),
+                  );
+                },
+                packages: ["Kanema Events", "KanemaSupa", data['name']],
+                contentName: data['name'],
+                thumbnail: data['thumb_nail'],
+                price: data['price'],
+              );
+            }),
       ],
     );
   }
@@ -152,7 +207,28 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
             ],
           ),
         ),
-        TrendingListSMWidget(trending: trending, clickableAction: (data) {}),
+        TrendingListSMWidget(
+          trending: trending,
+          clickableAction: (data) {
+            WatchBridgeFunctions.watchLiveBridge(
+              watchLive: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => VideoPlayerScreen(
+                      title: data['name'],
+                      videoUrl: data['stream_key'],
+                    ),
+                  ),
+                );
+              },
+              packages: ["Kanema Events", "KanemaSupa", data['name']],
+              contentName: data['name'],
+              thumbnail: data['thumb_nail'],
+              price: data['price'],
+            );
+          },
+        ),
       ],
     );
   }

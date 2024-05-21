@@ -14,39 +14,23 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
-    var isAuthLoading = Provider.of<AuthProvider>(context).isAuthLoading;
-    var isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
-
-    if (isAuthLoading) {
-      return Center(
-        child: CupertinoActivityIndicator(
-          color: white,
-          radius: 15,
-        ),
-      );
-    }
-
-    if (isLoggedIn) {
-      return const RootApp();
-    } else {
-      return const LandingScreen();
-    }
-
-    // return Consumer<AuthProvider>(
-    //   builder: (context, authProvider, child) {
-    //     if (authProvider.isAuthLoading) {
-    //       return Center(
-    //         child: CupertinoActivityIndicator(
-    //           color: white,
-    //           radius: 20,
-    //         ),
-    //       );
-    //     } else {
-    //       if (authProvider.isLoggedIn) {
-    //       } else {
-    //       }
-    //     }
-    //   },
-    // );
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        if (authProvider.isAuthLoading) {
+          return Center(
+            child: CupertinoActivityIndicator(
+              color: white,
+              radius: 15,
+            ),
+          );
+        } else {
+          if (authProvider.isLoggedIn) {
+            return const RootApp();
+          } else {
+            return const LandingScreen();
+          }
+        }
+      },
+    );
   }
 }

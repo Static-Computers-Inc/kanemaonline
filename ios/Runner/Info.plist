@@ -47,11 +47,24 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+        <key>io.flutter.embedded_views_preview</key>
+        <string>yes</string>
         <key>NSAppTransportSecurity</key>
         <dict>
             <key>NSAllowsArbitraryLoads</key>
             <true/>
+            <key>NSAllowsArbitraryLoadsInWebContent</key>
+            <true/>
         </dict>
-
+        
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+          <string>sms</string>
+          <string>tel</string>
+        </array>
+        
+        
+        
+        
 	</dict>
 </plist>

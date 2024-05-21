@@ -1,0 +1,56 @@
+Date : 2024-05-02 16:25:42
+Directory : /Users/kanema/Documents/Kanema/projects/kanemaonline/lib
+Total : 20 files,  137 codes, -1 comments, 18 blanks, all 154 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         20 |        137 |         -1 |         18 |        154 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                       | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                          |         20 |        137 |         -1 |         18 |        154 |
+| . (Files)                                                                                                  |          2 |          8 |          0 |          0 |          8 |
+| screens                                                                                                    |         14 |         -9 |         -1 |         10 |          0 |
+| screens (Files)                                                                                            |          1 |         -1 |          0 |          0 |         -1 |
+| screens/auth                                                                                               |          3 |         -5 |          0 |          0 |         -5 |
+| screens/details_pages                                                                                      |          1 |         -1 |          0 |          0 |         -1 |
+| screens/generics                                                                                           |          2 |         -3 |          0 |          0 |         -3 |
+| screens/home                                                                                               |          1 |       -133 |         -1 |          1 |       -133 |
+| screens/live_events                                                                                        |          2 |         16 |          0 |          0 |         16 |
+| screens/livetv                                                                                             |          1 |         -1 |          0 |          0 |         -1 |
+| screens/players                                                                                            |          1 |         -1 |          0 |          0 |         -1 |
+| screens/videos                                                                                             |          2 |        120 |          0 |          9 |        129 |
+| widgets                                                                                                    |          4 |        138 |          0 |          8 |        146 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                   | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/main.dart                                         | Dart     |          9 |          0 |          0 |          9 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/auth/choose_country.dart                  | Dart     |         -2 |          0 |          0 |         -2 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/auth/forgot_password.dart                 | Dart     |         -2 |          0 |          0 |         -2 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/auth/login.dart                           | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/details_pages/tv_show_details.dart        | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/generics/choose_country_popup.dart        | Dart     |         -2 |          0 |          0 |         -2 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/generics/landing.dart                     | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/home/homescreen.dart                      | Dart     |       -133 |         -1 |          1 |       -133 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/live_events/all_events_search_screen.dart | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/live_events/live_events_screens.dart      | Dart     |         17 |          0 |          0 |         17 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/livetv/livetv_screen.dart                 | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/players/video_player.dart                 | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/root_app.dart                             | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/videos/all_videos_search_screen.dart      | Dart     |        115 |          0 |          9 |        124 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/videos/videos_screen.dart                 | Dart     |          5 |          0 |          0 |          5 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/all_media_search_bar.dart                 | Dart     |         35 |          0 |          3 |         38 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/bot_toasts.dart                           | Dart     |         31 |          0 |          2 |         33 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/error_widget.dart                         | Dart     |         73 |          0 |          3 |         76 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/scaffold_wrapper.dart                     | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/wrapper.dart                                      | Dart     |         -1 |          0 |          0 |         -1 |
+| Total                                                                                                      |          |        137 |         -1 |         18 |        154 |
++------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

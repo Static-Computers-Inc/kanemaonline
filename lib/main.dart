@@ -2,9 +2,15 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/providers_init.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
 import 'package:kanemaonline/providers/live_events_provider.dart';
+import 'package:kanemaonline/providers/my_list_provider.dart';
+import 'package:kanemaonline/providers/navigation_bar_provider.dart';
+import 'package:kanemaonline/providers/packages_provider.dart';
+import 'package:kanemaonline/providers/trending_provider.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
+import 'package:kanemaonline/providers/user_info_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
 import 'package:kanemaonline/wrapper.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +23,20 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TVsProvider()..init()),
+        ChangeNotifierProvider(
+          create: (_) => TrendingProvider()..getAllTrends(),
+        ),
         ChangeNotifierProvider(create: (_) => VODsProvider()..init()),
         ChangeNotifierProvider(create: (_) => AuthProvider()..getAuthData()),
         ChangeNotifierProvider(create: (_) => LiveEventsProvider()..init()),
+        ChangeNotifierProvider(
+          create: (_) => PackagesProvider()..getPackages(),
+        ),
+        ChangeNotifierProvider(create: (_) => MyListProvider()),
+        ChangeNotifierProvider(
+          create: (_) => UserInfoProvider()..refreshUserData(),
+        ),
+        ChangeNotifierProvider(create: (_) => NavigationBarProvider())
       ],
       child: const MyApp(),
     ),
@@ -38,6 +55,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (Provider.of<AuthProvider>(context, listen: false).isLoggedIn) {
+      ProvidersInit.initOnFirstLoad(context: context);
+    }
   }
 
   // This widget is the root of your application.
@@ -46,6 +66,7 @@ class _MyAppState extends State<MyApp> {
     final botToastBuilder = BotToastInit();
     return StatusbarzCapturer(
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Kanema Online',
         themeMode: ThemeMode.dark,
@@ -74,6 +95,18 @@ class _MyAppState extends State<MyApp> {
               fontWeight: FontWeight.w800,
             ),
           ),
+          listTileTheme: ListTileThemeData(
+              titleTextStyle: TextStyle(
+                color: white,
+                fontFamily: "Urbanist",
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+              subtitleTextStyle: TextStyle(
+                color: darkGrey,
+                fontWeight: FontWeight.w600,
+                fontFamily: "Urbanist",
+              )),
         ),
         home: const Wrapper(),
       ),

@@ -28,6 +28,5 @@ class TVsProvider with ChangeNotifier {
 
   void init() async {
     getAllTVs();
-    getAllTrends();
   }
 }

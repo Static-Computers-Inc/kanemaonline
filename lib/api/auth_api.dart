@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kanemaonline/providers/auth_provider.dart';
+import 'package:kanemaonline/widgets/bot_toasts.dart';
 
 class AuthAPI {
   String baseUrl = "https://kanemaonline.com/clone";
@@ -42,10 +43,17 @@ class AuthAPI {
             refreshToken: newRefreshToken,
             userid: userid,
           );
+
           return true;
         } else {
           throw Exception("Failed to Login");
         }
+      } else {
+        BotToasts.showToast(
+          message: "Login Failed, Try again.",
+          isError: true,
+        );
+        throw Exception("Failed to Login");
       }
     } on SocketException {
       throw Exception("Please Check Your Internet Connection");
@@ -118,9 +126,62 @@ class AuthAPI {
   Future<bool> register({
     required String userid,
     required String password,
+    required String phonenumber,
+    required String name,
+    required String email,
   }) async {
     final url = Uri.parse('$baseUrl/auth/register');
 
-    return true;
+    final requestBody = {
+      {
+        "name": name,
+        "phone": phonenumber,
+        "email": email,
+        "password": password,
+        "city": "",
+        "service_name": "string",
+        "country": "string",
+        "isp": "string",
+        "region": "string",
+        "device": {},
+        "role": ["string"],
+        "favorites": ["string"],
+        "status": {
+          "admin": "string",
+          "payment": "string",
+          "subscriptions": ["string"]
+        },
+      }
+    };
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      // Send the POST request to register.
+      final response = await http.post(
+        url,
+        body: jsonEncode(requestBody),
+        headers: headers,
+      );
+
+      // If the response status code is 200, return true.
+      if (response.statusCode == 201) {
+        return true;
+      }
+      // If the response status code is not 200, throw an exception.
+      else {
+        throw Exception("Failed to register");
+      }
+    }
+    // If the request fails due to network connectivity issues, throw an exception.
+    on SocketException {
+      throw Exception("Please Check Your Internet Connection");
+    }
+    // If the request fails due to JSON decoding issues, throw an exception.
+    on FormatException {
+      throw Exception("Failed to decode JSON response");
+    }
   }
 }

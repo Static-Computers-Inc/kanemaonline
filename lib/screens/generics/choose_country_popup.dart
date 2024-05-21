@@ -104,8 +104,9 @@ class _ChooseCountryPopupState extends State<ChooseCountryPopup> {
                             width: MediaQuery.of(context).size.width * 0.57,
                             child: Text(
                               allCountries[index]['name'].toString(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w600,
+                                color: white,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -113,7 +114,10 @@ class _ChooseCountryPopupState extends State<ChooseCountryPopup> {
                           Expanded(child: Container()),
                           Text(
                             allCountries[index]['dial_code'].toString(),
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: white,
+                            ),
                           ),
                         ],
                       ),

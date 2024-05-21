@@ -74,7 +74,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               CupertinoPageRoute(
                                 builder: (context) => const LoginScreen(),
