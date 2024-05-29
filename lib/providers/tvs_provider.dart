@@ -4,7 +4,6 @@ import 'package:kanemaonline/api/tvs_api.dart';
 class TVsProvider with ChangeNotifier {
   List _tvs = [];
   List get tvs => _tvs;
-
   List _trends = [];
   List get trends => _trends;
 
@@ -15,7 +14,11 @@ class TVsProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    _tvs = await TvsAPI.getAllTVs();
+    var tvsList = await TvsAPI.getAllTVs();
+    debugPrint(tvsList.toString());
+    tvsList.removeWhere((element) => element['status']['visibility'] == false);
+
+    _tvs = tvsList;
 
     _isLoading = false;
     notifyListeners();

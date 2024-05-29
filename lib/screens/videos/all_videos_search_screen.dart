@@ -94,8 +94,8 @@ class _AllVideosSearchScreenState extends State<AllVideosSearchScreen> {
                   itemBuilder: (context, index) {
                     return Bounceable(
                       onTap: () => {
-                        WatchBridgeFunctions.watchLiveBridge(
-                          watchLive: () {
+                        WatchBridgeFunctions.watchVideoBridge(
+                          watchVideo: () {
                             Navigator.push(
                               context,
                               CupertinoPageRoute(
@@ -114,6 +114,7 @@ class _AllVideosSearchScreenState extends State<AllVideosSearchScreen> {
                           contentName: results[index]['name'],
                           thumbnail: results[index]['thumb_nail'],
                           price: results[index]['price'],
+                          isPublished: results[index]['publish'],
                         )
                       },
                       child: AspectRatio(

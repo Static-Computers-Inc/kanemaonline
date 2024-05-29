@@ -4,6 +4,7 @@ import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
+import 'package:kanemaonline/screens/details_pages/single_video_details.dart';
 import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/screens/videos/all_videos_search_screen.dart';
 import 'package:kanemaonline/widgets/error_widget.dart';
@@ -129,6 +130,7 @@ class _VideosScreenState extends State<VideosScreen> {
           contentName: mediaInfo['name'],
           thumbnail: mediaInfo['thumb_nail'],
           price: mediaInfo['price'],
+          isPublished: mediaInfo['status']['publish'],
         );
       },
       myListAction: () {
@@ -141,7 +143,16 @@ class _VideosScreenState extends State<VideosScreen> {
           mediaType: 'video',
         );
       },
-      infoAction: () {},
+      infoAction: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => SingleVideoDetails(
+              data: mediaInfo,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -163,27 +174,34 @@ class _VideosScreenState extends State<VideosScreen> {
         TrendingListSMWidget(
             trending: trending,
             clickableAction: (data) {
-              WatchBridgeFunctions.watchVideoBridge(
-                watchVideo: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => VideoPlayerScreen(
-                        videoUrl: data['stream_key'],
-                        title: data['name'],
-                      ),
-                    ),
-                  );
-                },
-                packages: [
-                  'KanemaFlex',
-                  'KanemaSupa',
-                  data['name'],
-                ],
-                contentName: data['name'],
-                thumbnail: data['thumb_nail'],
-                price: data['price'],
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => SingleVideoDetails(data: data),
+                ),
               );
+              // WatchBridgeFunctions.watchVideoBridge(
+              //   watchVideo: () {
+              //     Navigator.push(
+              //       context,
+              //       CupertinoPageRoute(
+              //         builder: (context) => VideoPlayerScreen(
+              //           videoUrl: data['stream_key'],
+              //           title: data['name'],
+              //         ),
+              //       ),
+              //     );
+              //   },
+              //   packages: [
+              //     'KanemaFlex',
+              //     'KanemaSupa',
+              //     data['name'],
+              //   ],
+              //   contentName: data['name'],
+              //   thumbnail: data['thumb_nail'],
+              //   price: data['price'],
+              //   isPublished: data['publish'],
+              // );
             }),
       ],
     );
@@ -230,26 +248,11 @@ class _VideosScreenState extends State<VideosScreen> {
         TrendingListSMWidget(
             trending: trending,
             clickableAction: (data) {
-              WatchBridgeFunctions.watchVideoBridge(
-                watchVideo: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => VideoPlayerScreen(
-                        videoUrl: data['stream_key'],
-                        title: data['name'],
-                      ),
-                    ),
-                  );
-                },
-                packages: [
-                  'KanemaFlex',
-                  'KanemaSupa',
-                  data['name'],
-                ],
-                contentName: data['name'],
-                thumbnail: data['thumb_nail'],
-                price: data['price'],
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => SingleVideoDetails(data: data),
+                ),
               );
             }),
       ],

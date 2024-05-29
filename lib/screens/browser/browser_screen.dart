@@ -40,9 +40,6 @@ class _BrowserScreenState extends State<BrowserScreen> {
           debugPrint("WebResourceError: ${error.description}");
         },
         onNavigationRequest: (NavigationRequest request) {
-          if (request.url.startsWith('https://www.youtube.com/')) {
-            return NavigationDecision.prevent;
-          }
           return NavigationDecision.navigate;
         },
       ),

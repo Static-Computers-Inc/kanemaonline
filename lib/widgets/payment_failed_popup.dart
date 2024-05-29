@@ -9,6 +9,7 @@ class PaymentFailedPopUp extends StatefulWidget {
   final String failedReason;
   final Function onRetry;
   final bool isPayperview;
+  final String paymentMethod;
 
   const PaymentFailedPopUp({
     super.key,
@@ -18,6 +19,7 @@ class PaymentFailedPopUp extends StatefulWidget {
     required this.failedReason,
     required this.onRetry,
     required this.isPayperview,
+    required this.paymentMethod,
   });
 
   @override
@@ -33,6 +35,10 @@ class _PaymentFailedPopUpState extends State<PaymentFailedPopUp> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
           color: white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -125,6 +131,15 @@ class _PaymentFailedPopUpState extends State<PaymentFailedPopUp> {
                 ),
               ),
               subtitle: const Text("Amount"),
+            ),
+            ListTile(
+              title: Text(
+                widget.paymentMethod,
+                style: TextStyle(
+                  color: black,
+                ),
+              ),
+              subtitle: const Text("Payment Method"),
             ),
             ListTile(
               title: Text(

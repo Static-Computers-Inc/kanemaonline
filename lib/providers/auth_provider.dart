@@ -100,9 +100,6 @@ class AuthProvider with ChangeNotifier {
     Provider.of<UserInfoProvider>(navigatorKey.currentState!.context,
             listen: false)
         .refreshUserData();
-    Provider.of<MyListProvider>(navigatorKey.currentState!.context,
-            listen: false)
-        .init();
 
     // Set loading state to false and notify listeners.
     _isAuthLoading = false;

@@ -130,53 +130,58 @@ class _SearchAllScreenState extends State<SearchAllScreen> {
                               "Kiliye Kiliye",
                               results[index]['name']
                             ],
+                            isPublished: results[index]['status']['publish'],
                           )
                         }
                       else if (results[index]['type'] == 'Video')
                         {
                           WatchBridgeFunctions.watchTVBridge(
-                              watchTV: () {
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) => VideoPlayerScreen(
-                                      videoUrl: results[index]['stream_key'],
-                                      title: results[index]['name'],
-                                    ),
+                            watchTV: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => VideoPlayerScreen(
+                                    videoUrl: results[index]['stream_key'],
+                                    title: results[index]['name'],
                                   ),
-                                );
-                              },
-                              contentName: results[index]['name'],
-                              thumbnail: results[index]['thumb_nail'],
-                              price: results[index]['price'],
-                              packages: [
-                                'KanemaSupa',
-                                "KiliyeFlex",
-                                results[index]['name']
-                              ])
+                                ),
+                              );
+                            },
+                            contentName: results[index]['name'],
+                            thumbnail: results[index]['thumb_nail'],
+                            price: results[index]['price'],
+                            packages: [
+                              'KanemaSupa',
+                              "KiliyeFlex",
+                              results[index]['name']
+                            ],
+                            isPublished: results[index]['status']['publish'],
+                          ),
                         }
                       else if (results[index]['type'] == 'Event')
                         {
                           WatchBridgeFunctions.watchTVBridge(
-                              watchTV: () {
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) => VideoPlayerScreen(
-                                      videoUrl: results[index]['stream_key'],
-                                      title: results[index]['name'],
-                                    ),
+                            watchTV: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => VideoPlayerScreen(
+                                    videoUrl: results[index]['stream_key'],
+                                    title: results[index]['name'],
                                   ),
-                                );
-                              },
-                              contentName: results[index]['name'],
-                              thumbnail: results[index]['thumb_nail'],
-                              price: results[index]['price'],
-                              packages: [
-                                'KanemaSupa',
-                                "Kiliye Events",
-                                results[index]['name']
-                              ])
+                                ),
+                              );
+                            },
+                            contentName: results[index]['name'],
+                            thumbnail: results[index]['thumb_nail'],
+                            price: results[index]['price'],
+                            packages: [
+                              'KanemaSupa',
+                              "Kiliye Events",
+                              results[index]['name']
+                            ],
+                            isPublished: results[index]['status']['publish'],
+                          )
                         }
                     },
                     child: AspectRatio(

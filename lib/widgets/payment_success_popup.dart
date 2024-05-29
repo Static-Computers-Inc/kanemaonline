@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/providers_init.dart';
+import 'package:kanemaonline/screens/generics/receipt_screenshot.dart';
 import 'package:lottie/lottie.dart';
+import 'package:transparent_route/transparent_route.dart';
 
 class PaymentSuccessPopup extends StatefulWidget {
   final String packageName;
   final String depositID;
   final double amount;
   final bool isPayPerView;
+  final String paymentMethod;
   const PaymentSuccessPopup({
     super.key,
     required this.packageName,
     required this.depositID,
     required this.amount,
     required this.isPayPerView,
+    required this.paymentMethod,
   });
 
   @override
@@ -30,6 +34,10 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
           color: white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -45,7 +53,7 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
             const Text(
               "Payment Successful",
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -54,7 +62,7 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
               child: Text(
                 "Transaction completed with reference number: ${widget.depositID}",
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -66,12 +74,14 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
                     widget.packageName,
                     style: TextStyle(
                       color: black,
+                      fontSize: 14,
                     ),
                   ),
                   Text(
                     widget.isPayPerView ? " (Pay Per View)" : "",
                     style: TextStyle(
                       color: black,
+                      fontSize: 14,
                     ),
                   ),
                 ],
@@ -88,15 +98,24 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
                 "${NumberFormat.currency(symbol: "MWK ", decimalDigits: 0).format(widget.amount)} (PAID)",
                 style: TextStyle(
                   color: green,
+                  fontSize: 14,
                 ),
               ),
               subtitle: const Text("Amount"),
             ),
             ListTile(
               title: Text(
+                widget.paymentMethod,
+                style: TextStyle(color: black, fontSize: 14),
+              ),
+              subtitle: const Text("Payment Method"),
+            ),
+            ListTile(
+              title: Text(
                 DateFormat("dd-MMM-yyy (hh:mm aa)").format(DateTime.now()),
                 style: TextStyle(
                   color: black,
+                  fontSize: 14,
                 ),
               ),
               subtitle: const Text("Date"),
@@ -107,25 +126,43 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: green,
-                          width: 3,
-                          strokeAlign: BorderSide.strokeAlignOutside,
+                    child: GestureDetector(
+                      onTap: () {
+                        pushScreen(
+                          context,
+                          ReceiptScreenshot(
+                              ref: widget.depositID,
+                              packageName:
+                                  "${widget.packageName} ${widget.isPayPerView ? " (Pay Per View)" : ""}",
+                              paymentMethod: widget.paymentMethod,
+                              amount:
+                                  "${NumberFormat.currency(symbol: "MWK ", decimalDigits: 0).format(widget.amount)} (PAID)",
+                              date: DateFormat("dd-MMM-yyy (hh:mm aa)")
+                                  .format(DateTime.now())),
+                          isTransparent: true,
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 20,
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Save",
-                          style: TextStyle(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
                             color: green,
-                            fontWeight: FontWeight.w700,
+                            width: 3,
+                            strokeAlign: BorderSide.strokeAlignOutside,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Save Receipt",
+                            style: TextStyle(
+                              color: green,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -156,6 +193,7 @@ class _PaymentSuccessPopupState extends State<PaymentSuccessPopup> {
                             style: TextStyle(
                               color: white,
                               fontWeight: FontWeight.w700,
+                              fontSize: 14,
                             ),
                           ),
                         ),

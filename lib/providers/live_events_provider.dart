@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kanemaonline/api/live_events_api.dart';
 
 class LiveEventsProvider with ChangeNotifier {
-  List events = [];
-  List get tvs => events;
-
+  List _events = [];
+  List get events => _events;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -12,8 +11,11 @@ class LiveEventsProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    events = await LiveEventsAPI.getAllTrending();
+    List eventsList = await LiveEventsAPI.getAllTrending();
 
+    eventsList
+        .removeWhere((element) => element['status']['visibility'] == false);
+    _events = eventsList;
     _isLoading = false;
     notifyListeners();
   }

@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -50,6 +52,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void initState() {
+    super.initState();
     controller = VideoPlayerController.network(widget.videoUrl);
     controller.initialize().then((value) {
       controller.play();
@@ -71,7 +74,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       brightnessListener(value);
     });
 
-    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (Platform.isAndroid) {
+        await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+      }
+    });
   }
 
   @override
@@ -86,6 +93,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
     controller.dispose();
+
+    if (Platform.isAndroid) {
+      FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+    }
   }
 
   brightnessListener(double brightnessVal) async {
@@ -167,7 +178,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             Center(
               child: controller.value.isInitialized
                   ? AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
+                      aspectRatio: 16 / 9, // controller.value.aspectRatio,
                       child: InteractiveViewer(
                         clipBehavior: Clip.none,
                         panEnabled: false,

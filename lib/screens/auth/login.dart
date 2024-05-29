@@ -22,7 +22,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoginIn = false;
   bool obscurePassword = true;
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   void _login() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       return;
     }
@@ -46,6 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
       ProvidersInit.refreshProviders(context: context);
     } catch (e) {
       debugPrint(e.toString());
+      setState(() {
+        isLoginIn = false;
+      });
       return;
     }
 
@@ -88,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.55,
                   decoration: BoxDecoration(
                       color: white,
                       borderRadius: const BorderRadius.only(
@@ -108,62 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          controller: emailController,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          decoration: authInputDecoration.copyWith(
-                              prefixIcon: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 14),
-                                child: SvgPicture.asset(
-                                  "assets/svg/email.svg",
-                                  width: 10,
-                                  color: darkGrey,
-                                ),
-                              ),
-                              hintText: "Email / Phone Number"),
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: passwordController,
-                          obscureText: obscurePassword,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          decoration: authInputDecoration.copyWith(
-                            hintText: "Password",
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  obscurePassword = !obscurePassword;
-                                });
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 14),
-                                child: Icon(
-                                  obscurePassword
-                                      ? CupertinoIcons.eye
-                                      : CupertinoIcons.eye_slash,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            prefixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              child: SvgPicture.asset(
-                                "assets/svg/password.svg",
-                                width: 10,
-                                color: darkGrey,
-                              ),
-                            ),
-                          ),
-                        ),
+
+                        _buildForms(),
                         const SizedBox(height: 20),
 
                         // forgot password
@@ -228,6 +182,78 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildForms() {
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: emailController,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+            decoration: authInputDecoration.copyWith(
+              prefixIcon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: SvgPicture.asset(
+                  "assets/svg/email.svg",
+                  width: 10,
+                  color: Colors.grey, // Assuming darkGrey is a Color variable
+                ),
+              ),
+              hintText: "Email / Phone Number",
+            ),
+            validator: (value) {
+              String pattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$';
+              var regExp = RegExp(pattern);
+              if (!regExp.hasMatch(value!)) {
+                return "Email is not in a valid format";
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            controller: passwordController,
+            obscureText: obscurePassword,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+            decoration: authInputDecoration.copyWith(
+              hintText: "Password",
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    obscurePassword = !obscurePassword;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Icon(
+                    obscurePassword
+                        ? CupertinoIcons.eye
+                        : CupertinoIcons.eye_slash,
+                    size: 20,
+                  ),
+                ),
+              ),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: SvgPicture.asset(
+                  "assets/svg/password.svg",
+                  width: 10,
+                  color: Colors.grey, // Assuming darkGrey is a Color variable
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -36,7 +36,7 @@ class MyListProvider with ChangeNotifier {
     String encodedList = prefs.getString("myList") ?? "[]";
     List<dynamic> decodedList = jsonDecode(encodedList) as List<dynamic>;
 
-    if (decodedList.any((element) => element["id"] == id)) {
+    if (decodedList.any((element) => element["_id"] == id)) {
       return;
     }
 
@@ -58,28 +58,25 @@ class MyListProvider with ChangeNotifier {
   init() async {
     _isListLoading = true;
     notifyListeners();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String encodedList = prefs.getString("myList") ?? "[]";
-    List<dynamic> decodedList = jsonDecode(encodedList) as List<dynamic>;
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String encodedList = prefs.getString("myList") ?? "[]";
+    // List<dynamic> decodedList = jsonDecode(encodedList) as List<dynamic>;
 
     List cloudList = Provider.of<UserInfoProvider>(
       navigatorKey.currentState!.context,
       listen: false,
     ).userData['message'][0]['favorites'];
 
-    List<dynamic> missingIDs = [];
+    // List<dynamic> missingIDs = [];
 
-    for (var element in cloudList) {
-      if (!decodedList.any((item) => item["id"] == element['id'])) {
-        missingIDs.add(element);
-      }
-    }
-
-    debugPrint('missing items $missingIDs');
     var contents = [];
-    for (var element in missingIDs) {
-      var content = await MyListAPI().getItemByID(id: element.toString());
-      contents.add(content);
+    for (var element in cloudList) {
+      if (element != "") {
+        var content = await MyListAPI().getItemByID(id: element.toString());
+        if (content.isNotEmpty) {
+          contents.add(content);
+        }
+      }
     }
 
     debugPrint(contents.toString());
@@ -90,7 +87,7 @@ class MyListProvider with ChangeNotifier {
     //   debugPrint('was not found $element');
     // }
 
-    _myList = decodedList;
+    // _myList = decodedList;
     notifyListeners();
   }
 }

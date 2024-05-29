@@ -62,14 +62,15 @@ class UserInfoProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String data = prefs.getString("userData") ?? "{}";
 
-    Map<dynamic, dynamic> decodedData =
-        jsonDecode(data) as Map<dynamic, dynamic>;
+    // Map<dynamic, dynamic> decodedData =
+    //     jsonDecode(data) as Map<dynamic, dynamic>;
 
-    if (decodedData == {}) {
-      refreshUserData();
-    } else {
-      _userData = decodedData;
-    }
+    // if (decodedData == {}) {
+    //   refreshUserData();
+    // } else {
+    //   _userData = decodedData;
+    // }
+    refreshUserData();
 
     _isLoading = true;
     notifyListeners();

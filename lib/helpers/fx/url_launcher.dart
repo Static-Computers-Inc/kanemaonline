@@ -1,9 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LaunchUrl {
-  static launch(String url) async {
+  static launch(String url, {Function? onReturn}) async {
     if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.inAppWebView);
+      var result = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.inAppWebView,
+        webViewConfiguration: const WebViewConfiguration(),
+      );
+
+      if (onReturn != null) onReturn(result);
     } else {
       throw 'Could not launch $url';
     }

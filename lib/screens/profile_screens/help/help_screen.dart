@@ -26,7 +26,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 LaunchUrl.launch(helpCenterURL);
               },
               title: const Text(
-                "Help centre",
+                "Help Centre",
               ),
               subtitle: const Text("contact us, get help"),
             ),
@@ -49,7 +49,7 @@ class _HelpScreenState extends State<HelpScreen> {
               onTap: () {
                 LaunchUrl.launch(privacyPolicyURL);
               },
-              title: const Text("Terms and Privacy Policy"),
+              title: const Text("Privacy Policy"),
             ),
             ListTile(
               onTap: () {

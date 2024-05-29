@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:kanemaonline/main.dart';
 import 'package:kanemaonline/providers/user_info_provider.dart';
+import 'package:kanemaonline/widgets/not_publsihed_pop.dart';
 import 'package:kanemaonline/widgets/subscribe_popup.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,17 @@ class WatchBridgeFunctions {
     required String thumbnail,
     required int price,
     required List packages,
+    required bool isPublished,
   }) {
+    // check if content is published
+
+    if (!isPublished) {
+      return showCupertinoModalPopup(
+        context: navigatorKey.currentState!.context,
+        builder: (context) => const NotPublisedPopup(),
+      );
+    }
+
     // check subscription
 
     bool hasSubscription;
@@ -50,7 +61,15 @@ class WatchBridgeFunctions {
     required String contentName,
     required String thumbnail,
     required int price,
+    required bool isPublished,
   }) {
+    if (!isPublished) {
+      return showCupertinoModalPopup(
+        context: navigatorKey.currentState!.context,
+        builder: (context) => const NotPublisedPopup(),
+      );
+    }
+
     // check subscription
 
     bool hasSubscription;
@@ -87,8 +106,16 @@ class WatchBridgeFunctions {
     required String contentName,
     required String thumbnail,
     required int price,
+    required bool isPublished,
   }) {
     // check subscription
+
+    if (!isPublished) {
+      return showCupertinoModalPopup(
+        context: navigatorKey.currentState!.context,
+        builder: (context) => const NotPublisedPopup(),
+      );
+    }
 
     bool hasSubscription;
 

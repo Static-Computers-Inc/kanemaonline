@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kanemaonline/api/ip_lookup_api.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
 import 'package:kanemaonline/widgets/bot_toasts.dart';
 
@@ -31,9 +32,11 @@ class AuthAPI {
       debugPrint(response.body.toString());
       if (response.statusCode == 201) {
         final body = jsonDecode(response.body);
-        var status = body['status'] != "unsuccesful";
-        debugPrint(status.toString());
-        if (status) {
+        var status = body['status'];
+
+        //LOGIN SUCESSFUL
+
+        if (status == "success") {
           final newRefreshToken = body['message']['tk']['refresh_token'];
           final newAccessToken = body['message']['tk']['accessToken'];
           final userid = body['message']['user'];
@@ -46,14 +49,12 @@ class AuthAPI {
 
           return true;
         } else {
+          BotToasts.showToast(
+            message: body['message']['response']['message'],
+            isError: true,
+          );
           throw Exception("Failed to Login");
         }
-      } else {
-        BotToasts.showToast(
-          message: "Login Failed, Try again.",
-          isError: true,
-        );
-        throw Exception("Failed to Login");
       }
     } on SocketException {
       throw Exception("Please Check Your Internet Connection");
@@ -140,22 +141,22 @@ class AuthAPI {
         "password": password,
         "city": "",
         "service_name": "string",
-        "country": "string",
-        "isp": "string",
-        "region": "string",
-        "device": {},
-        "role": ["string"],
-        "favorites": ["string"],
-        "status": {
-          "admin": "string",
-          "payment": "string",
-          "subscriptions": ["string"]
-        },
       }
+    };
+
+    // GET LOCATION DATA
+    var ipdata = await IPLookUpAPI().getIPData();
+
+    Map<dynamic, dynamic> addressInfo = {
+      "isp": ipdata['connection']['organization'],
+      "city": ipdata['location']['city'],
+      "country": ipdata['location']['country']['name'],
+      "region": ipdata['location']['region']['name'],
     };
 
     final headers = {
       'Content-Type': 'application/json',
+      'x_location_info': jsonEncode(addressInfo),
     };
 
     try {
@@ -182,6 +183,34 @@ class AuthAPI {
     // If the request fails due to JSON decoding issues, throw an exception.
     on FormatException {
       throw Exception("Failed to decode JSON response");
+    }
+  }
+
+  Future<Map<dynamic, dynamic>> verifyOTP({
+    required String code,
+  }) async {
+    final url = Uri.parse('$baseUrl/auth/verify-account/$code');
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = {"id": code};
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(body),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        var data = await jsonDecode(response.body) as Map<dynamic, dynamic>;
+        return data;
+      }
+      return {};
+    } catch (err) {
+      throw Exception(err);
     }
   }
 }

@@ -3,15 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:kanemaonline/api/payment_api.dart';
 import 'package:kanemaonline/data/countries.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/url_launcher.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
+import 'package:kanemaonline/screens/browser/browser_screen.dart';
 import 'package:kanemaonline/screens/generics/choose_country_popup.dart';
+import 'package:kanemaonline/widgets/activity_loading_widget.dart';
 import 'package:kanemaonline/widgets/bot_toasts.dart';
 import 'package:kanemaonline/widgets/checking_payment_popup.dart';
+import 'package:kanemaonline/widgets/payment_success_popup.dart';
 import 'package:provider/provider.dart';
 
 class PaymentGatewayScreen extends StatefulWidget {
@@ -43,6 +47,12 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
   TextEditingController creditCardCVV = TextEditingController();
 
   void payWithMobile() async {
+    String phoneNumber = countries
+            .where((element) => element['code'] == countryCode)
+            .first['dial_code']
+            .toString() +
+        mobilePhoneNumberController.text.trim();
+
     if (_formKey.currentState!.validate()) {
       try {
         setState(() {
@@ -54,12 +64,9 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
           packageName: widget.packageName,
           paymentMethod: "PawaPay",
           duration: widget.duration.toDouble(),
-          phoneNumber: countries
-                  .where((element) => element['code'] == countryCode)
-                  .first['dial_code']
-                  .toString() +
-              mobilePhoneNumberController.text.trim(),
+          phoneNumber: phoneNumber,
         );
+        debugPrint(response.toString());
         if (response["message"]['status'] == "ACCEPTED") {
           showCupertinoModalPopup(
             context: context,
@@ -68,6 +75,7 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
               packageName: widget.packageName,
               amount: widget.totalPrice.toDouble(),
               onRetry: () => payWithMobile(),
+              paymentMethod: "Mobile Money $phoneNumber",
               isPayperView: widget.isPayPerView,
             ),
           );
@@ -96,6 +104,63 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
     }
   }
 
+  void payWithPayPal() async {
+    try {
+      setState(() {
+        isPaymentLoading = true;
+      });
+      final response = await PaymentAPI.initiatePayPalPayment(
+          userId: Provider.of<AuthProvider>(context, listen: false).userid,
+          amount: widget.totalPrice.toDouble(),
+          packageName: widget.packageName,
+          paymentMethod: "PawaPay",
+          duration: widget.duration.toDouble(),
+          phoneNumber: "");
+      if (response["status"] == "success") {
+        showCupertinoModalPopup(
+          context: context,
+          builder: (context) => CheckingPaymentPopup(
+            depositID: response['ref'],
+            packageName: widget.packageName,
+            amount: widget.totalPrice.toDouble(),
+            onRetry: () => payWithPayPal(),
+            paymentMethod: "PayPal",
+            isPayperView: widget.isPayPerView,
+          ),
+        );
+
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => BrowserScreen(
+              url: response['message'],
+              title: 'PayPal',
+            ),
+          ),
+        ).then((value) {
+          PaymentAPI.notifyBackened(ref: response['ref'], status: "CLOSED");
+        });
+      } else {
+        BotToasts.showToast(
+          message: "Failed to process payment. Please try again.",
+          isError: true,
+        );
+      }
+      setState(() {
+        isPaymentLoading = false;
+      });
+    } catch (err) {
+      BotToasts.showToast(
+        message: "Something went wrong, please try again.",
+        isError: true,
+      );
+      debugPrint(err.toString());
+      setState(() {
+        isPaymentLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,12 +168,7 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
         title: const Text("Payment Gateway"),
       ),
       body: isPaymentLoading
-          ? Center(
-              child: CupertinoActivityIndicator(
-                color: white,
-                radius: 16,
-              ),
-            )
+          ? const CustomIndicatorWidget()
           : Column(
               children: [
                 const SizedBox(height: 20),
@@ -504,56 +564,7 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
 
   Widget _buildPayPalButton() {
     return GestureDetector(
-      onTap: () async {
-        try {
-          setState(() {
-            isPaymentLoading = true;
-          });
-          final response = await PaymentAPI.initiatePayPalPayment(
-              userId: Provider.of<AuthProvider>(context, listen: false).userid,
-              amount: widget.totalPrice.toDouble(),
-              packageName: widget.packageName,
-              paymentMethod: "PawaPay",
-              duration: widget.duration.toDouble(),
-              phoneNumber: ""
-              // countries
-              //         .where((element) => element['code'] == countryCode)
-              //         .first['dial_code']
-              //         .toString() +
-              //     mobilePhoneNumberController.text.trim(),
-              );
-          if (response["status"] == "success") {
-            showCupertinoModalPopup(
-              context: context,
-              builder: (context) => CheckingPaymentPopup(
-                depositID: response['ref'],
-                packageName: widget.packageName,
-                amount: widget.totalPrice.toDouble(),
-                onRetry: () {},
-                isPayperView: widget.isPayPerView,
-              ),
-            );
-            LaunchUrl.launch(response['message']);
-          } else {
-            BotToasts.showToast(
-              message: "Failed to process payment. Please try again.",
-              isError: true,
-            );
-          }
-          setState(() {
-            isPaymentLoading = false;
-          });
-        } catch (err) {
-          BotToasts.showToast(
-            message: "Something went wrong, please try again.",
-            isError: true,
-          );
-          debugPrint(err.toString());
-          setState(() {
-            isPaymentLoading = false;
-          });
-        }
-      },
+      onTap: () => payWithPayPal(),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
@@ -721,12 +732,14 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
           if (response["status"] == "success") {
             showCupertinoModalPopup(
               context: context,
-              builder: (context) => CheckingPaymentPopup(
-                depositID: response['ref'],
+              barrierDismissible: false,
+              builder: (context) => PaymentSuccessPopup(
                 packageName: widget.packageName,
+                depositID: response["ref"],
+                paymentMethod:
+                    "Credit/Debit Card **${creditCardNumber.text.substring(creditCardNumber.text.length - 4)}",
                 amount: widget.totalPrice.toDouble(),
-                onRetry: () {},
-                isPayperView: widget.isPayPerView,
+                isPayPerView: widget.isPayPerView,
               ),
             );
           } else {

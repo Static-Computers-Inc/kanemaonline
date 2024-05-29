@@ -6,6 +6,7 @@ import 'package:kanemaonline/helpers/constants/colors.dart';
 class TrendingListSMWidget extends StatelessWidget {
   final List trending;
   final Function clickableAction;
+
   const TrendingListSMWidget({
     super.key,
     required this.trending,
@@ -33,17 +34,55 @@ class TrendingListSMWidget extends StatelessWidget {
                     aspectRatio: 1 / 1.2,
                     child: Padding(
                       padding: const EdgeInsets.all(3),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: darkGrey.withOpacity(0.5),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
-                              trending[index]['thumb_nail'],
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: darkGrey.withOpacity(0.5),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: CachedNetworkImageProvider(
+                                  trending[index]['thumb_nail'],
+                                ),
+                              ),
+                              borderRadius: BorderRadius.circular(7),
                             ),
                           ),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 15),
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                colors: [
+                                  black.withOpacity(1),
+                                  black.withOpacity(0.7),
+                                  black.withOpacity(0.0),
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              )),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    trending[index]['name'],
+                                    style: TextStyle(
+                                      color: white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),

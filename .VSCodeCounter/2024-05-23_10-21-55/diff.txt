@@ -1,0 +1,112 @@
+Date : 2024-05-23 10:21:55
+Directory : /Users/kanema/Documents/Kanema/projects/kanemaonline/lib
+Total : 61 files,  3354 codes, 21 comments, 298 blanks, all 3673 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         61 |      3,354 |         21 |        298 |      3,673 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                           | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                              |         61 |      3,354 |         21 |        298 |      3,673 |
+| . (Files)                                                                                                                      |          2 |         39 |        -16 |         -1 |         22 |
+| api                                                                                                                            |          7 |        450 |         14 |         61 |        525 |
+| data                                                                                                                           |          1 |     -1,278 |          0 |         -1 |     -1,279 |
+| helpers                                                                                                                        |          5 |        145 |          3 |         23 |        171 |
+| helpers/constants                                                                                                              |          2 |          5 |          0 |          2 |          7 |
+| helpers/fx                                                                                                                     |          3 |        140 |          3 |         21 |        164 |
+| providers                                                                                                                      |          7 |        182 |          7 |         47 |        236 |
+| screens                                                                                                                        |         30 |      3,038 |         18 |        138 |      3,194 |
+| screens (Files)                                                                                                                |          2 |         45 |          2 |          4 |         51 |
+| screens/auth                                                                                                                   |          3 |         50 |          1 |          8 |         59 |
+| screens/browser                                                                                                                |          1 |         71 |          3 |          8 |         82 |
+| screens/generics                                                                                                               |          2 |        188 |          2 |         12 |        202 |
+| screens/home                                                                                                                   |          1 |        275 |         -1 |          1 |        275 |
+| screens/live_events                                                                                                            |          2 |        142 |          0 |          7 |        149 |
+| screens/livetv                                                                                                                 |          2 |        159 |          0 |          9 |        168 |
+| screens/payments                                                                                                               |          1 |        227 |          1 |          7 |        235 |
+| screens/players                                                                                                                |          2 |         14 |          4 |          4 |         22 |
+| screens/profile                                                                                                                |          1 |         49 |          1 |          3 |         53 |
+| screens/profile_screens                                                                                                        |         10 |      1,501 |         11 |         66 |      1,578 |
+| screens/profile_screens/account                                                                                                |          2 |        117 |          0 |          6 |        123 |
+| screens/profile_screens/help                                                                                                   |          2 |        113 |          9 |          7 |        129 |
+| screens/profile_screens/subscriptions                                                                                          |          6 |      1,271 |          2 |         53 |      1,326 |
+| screens/search                                                                                                                 |          1 |        201 |          0 |          9 |        210 |
+| screens/videos                                                                                                                 |          2 |        116 |         -6 |          0 |        110 |
+| services                                                                                                                       |          1 |          7 |          0 |          1 |          8 |
+| test_screens                                                                                                                   |          1 |         24 |          0 |          4 |         28 |
+| widgets                                                                                                                        |          7 |        747 |         -5 |         26 |        768 |
++--------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                       | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/auth_api.dart                                                     | Dart     |         52 |          5 |          4 |         61 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/ip_lookup_api.dart                                                | Dart     |          5 |          0 |          1 |          6 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/mylist_api.dart                                                   | Dart     |         85 |          6 |         11 |        102 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/packages_api.dart                                                 | Dart     |         47 |          0 |          7 |         54 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/payment_api.dart                                                  | Dart     |        202 |          3 |         27 |        232 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/trending_api.dart                                                 | Dart     |         26 |          0 |          4 |         30 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/api/users_api.dart                                                    | Dart     |         33 |          0 |          7 |         40 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/data/trends.dart                                                      | Dart     |     -1,278 |          0 |         -1 |     -1,279 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/helpers/constants/colors.dart                                         | Dart     |          2 |          0 |          1 |          3 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/helpers/constants/values.dart                                         | Dart     |          3 |          0 |          1 |          4 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/helpers/fx/providers_init.dart                                        | Dart     |         20 |          0 |          4 |         24 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/helpers/fx/url_launcher.dart                                          | Dart     |         16 |          0 |          3 |         19 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/helpers/fx/watch_bridge_functions.dart                                | Dart     |        104 |          3 |         14 |        121 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/main.dart                                                             | Dart     |         41 |          0 |          2 |         43 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/auth_provider.dart                                          | Dart     |          9 |          1 |          0 |         10 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/my_list_provider.dart                                       | Dart     |         73 |          5 |         19 |         97 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/navigation_bar_provider.dart                                | Dart     |          9 |          0 |          3 |         12 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/packages_provider.dart                                      | Dart     |         15 |          0 |          6 |         21 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/trending_provider.dart                                      | Dart     |         15 |          0 |          4 |         19 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/tvs_provider.dart                                           | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/providers/user_info_provider.dart                                     | Dart     |         62 |          1 |         15 |         78 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/auth/login_black_screens.dart                                 | Dart     |         12 |          0 |          4 |         16 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/auth/otp_verify_screen.dart                                   | Dart     |         21 |          0 |          4 |         25 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/auth/register.dart                                            | Dart     |         17 |          1 |          0 |         18 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/browser/browser_screen.dart                                   | Dart     |         71 |          3 |          8 |         82 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/generics/choose_country_popup.dart                            | Dart     |          4 |          0 |          0 |          4 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/generics/receipt_screenshot.dart                              | Dart     |        184 |          2 |         12 |        198 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/home/homescreen.dart                                          | Dart     |        275 |         -1 |          1 |        275 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/live_events/all_events_search_screen.dart                     | Dart     |         68 |          0 |          5 |         73 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/live_events/live_events_screens.dart                          | Dart     |         74 |          0 |          2 |         76 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/livetv/all_tvs_search_screen.dart                             | Dart     |        138 |          0 |          9 |        147 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/livetv/livetv_screen.dart                                     | Dart     |         21 |          0 |          0 |         21 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/payments/single_item_sub.dart                                 | Dart     |        227 |          1 |          7 |        235 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/players/live_tvs_player.dart                                  | Dart     |         14 |          4 |          3 |         21 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/players/video_player.dart                                     | Dart     |          0 |          0 |          1 |          1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile/profile_screen.dart                                   | Dart     |         49 |          1 |          3 |         53 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/account/account_screen.dart                   | Dart     |        103 |          0 |          2 |        105 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/account/edit_profile_screen.dart              | Dart     |         14 |          0 |          4 |         18 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/help/app_info_screen.dart                     | Dart     |         67 |          0 |          7 |         74 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/help/help_screen.dart                         | Dart     |         46 |          9 |          0 |         55 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/subscriptions/payment_gateway_screen.dart     | Dart     |        778 |          2 |         27 |        807 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/subscriptions/select_package_screen.dart      | Dart     |        202 |          0 |          8 |        210 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/subscriptions/subscription_cofirm_page.dart   | Dart     |         29 |          0 |          4 |         33 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/subscriptions/subscription_failed_screen.dart | Dart     |         16 |          0 |          4 |         20 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/subscriptions/subscription_pending_page.dart  | Dart     |         86 |          0 |          6 |         92 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/profile_screens/subscriptions/subscription_screen.dart        | Dart     |        160 |          0 |          4 |        164 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/root_app.dart                                                 | Dart     |          8 |          0 |          0 |          8 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/search/search_all_screen.dart                                 | Dart     |        201 |          0 |          9 |        210 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/tests_screen.dart                                             | Dart     |         37 |          2 |          4 |         43 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/videos/all_videos_search_screen.dart                          | Dart     |         24 |          0 |          0 |         24 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/screens/videos/videos_screen.dart                                     | Dart     |         92 |         -6 |          0 |         86 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/services/auth_service.dart                                            | Dart     |          7 |          0 |          1 |          8 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/test_screens/payperview.dart                                          | Dart     |         24 |          0 |          4 |         28 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/activity_loading_widget.dart                                  | Dart     |         26 |          0 |          3 |         29 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/checking_payment_popup.dart                                   | Dart     |        134 |          2 |          7 |        143 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/hero_widget.dart                                              | Dart     |         45 |         -7 |          3 |         41 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/payment_failed_popup.dart                                     | Dart     |        216 |          0 |          5 |        221 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/payment_success_popup.dart                                    | Dart     |        207 |          0 |          4 |        211 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/subscribe_popup.dart                                          | Dart     |        120 |          0 |          4 |        124 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/widgets/trending_list_sm_widget.dart                                  | Dart     |         -1 |          0 |          0 |         -1 |
+| /Users/kanema/Documents/Kanema/projects/kanemaonline/lib/wrapper.dart                                                          | Dart     |         -2 |        -16 |         -3 |        -21 |
+| Total                                                                                                                          |          |      3,354 |         21 |        298 |      3,673 |
++--------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

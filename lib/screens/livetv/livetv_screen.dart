@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
+import 'package:kanemaonline/screens/details_pages/live_tv_details.dart';
 import 'package:kanemaonline/screens/livetv/all_tvs_search_screen.dart';
 import 'package:kanemaonline/screens/players/live_tvs_player.dart';
 import 'package:kanemaonline/widgets/hero_search_appbar.dart';
@@ -38,6 +39,7 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
               Consumer<TVsProvider>(
                 builder: (context, value, child) {
                   var index = 1;
+
                   return Container(
                     decoration: BoxDecoration(
                       color: white,
@@ -96,6 +98,8 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                                         value.tvs[index]['name'],
                                       ],
                                       thumbnail: value.tvs[index]['thumb_nail'],
+                                      isPublished: value.tvs[index]['status']
+                                          ['publish'],
                                     );
                                   },
                                   child: SvgPicture.asset(
@@ -141,41 +145,70 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                         ),
                         itemCount: tvsProvider.tvs.length,
                         itemBuilder: (context, index) {
+                          // if (tvsProvider.tvs[index]['status']['visibility'] ==
+                          //     false) {
+                          //   return Container();
+                          // }
                           return GestureDetector(
                             onTap: () {
-                              WatchBridgeFunctions.watchTVBridge(
-                                contentName: tvsProvider.tvs[index]['name'],
-                                price: tvsProvider.tvs[index]['price'],
-                                packages: [
-                                  'Kiliye Kiliye',
-                                  'KanemaSupa',
-                                  tvsProvider.tvs[index]['name'],
-                                ],
-                                watchTV: () {
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (context) => LiveTvsPlayerScreen(
-                                        name: tvsProvider.tvs[index]['name'],
-                                        streamKey: tvsProvider.tvs[index]
-                                            ['stream_key'],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                thumbnail: tvsProvider.tvs[index]['thumb_nail'],
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => SingleTVDetails(
+                                    data: tvsProvider.tvs[index],
+                                  ),
+                                ),
                               );
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  fit: BoxFit.fitWidth,
-                                  image: CachedNetworkImageProvider(
-                                      tvsProvider.tvs[index]['thumb_nail']),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      fit: BoxFit.fitWidth,
+                                      image: CachedNetworkImageProvider(
+                                          tvsProvider.tvs[index]['thumb_nail']),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 15),
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                      colors: [
+                                        black.withOpacity(1),
+                                        black.withOpacity(0.7),
+                                        black.withOpacity(0.0),
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    )),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          tvsProvider.tvs[index]['name'],
+                                          style: TextStyle(
+                                            color: white,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           );
                         },

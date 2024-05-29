@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/providers/packages_provider.dart';
+import 'package:kanemaonline/providers/user_info_provider.dart';
 import 'package:kanemaonline/screens/profile_screens/subscriptions/select_package_screen.dart';
 import 'package:kanemaonline/widgets/activity_loading_widget.dart';
 import 'package:provider/provider.dart';
@@ -22,24 +23,107 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
       appBar: AppBar(
         title: const Text("Subscriptions & Packages"),
       ),
-      body: Consumer<PackagesProvider>(builder: (context, value, _) {
-        if (value.isLoading) {
-          return const CustomIndicatorWidget();
-        }
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 25,
-              ),
-              _buildUpgradePackages(),
-            ],
-          ),
-        );
-      }),
+      body: SingleChildScrollView(
+        child: Consumer<PackagesProvider>(builder: (context, value, _) {
+          if (value.isLoading) {
+            return const CustomIndicatorWidget();
+          }
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 25,
+                ),
+                _buildMySubscriptions(),
+                const SizedBox(height: 25),
+                _buildUpgradePackages(),
+                const SizedBox(height: 35),
+              ],
+            ),
+          );
+        }),
+      ),
     );
+  }
+
+  _buildMySubscriptions() {
+    return Consumer<UserInfoProvider>(builder: (context, value, _) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          "My Subscriptions",
+          style: TextStyle(
+            color: white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 20),
+        _buildSubscriptionList()
+      ]);
+    });
+  }
+
+  Widget _buildSubscriptionList() {
+    return Consumer<UserInfoProvider>(builder: (context, value, child) {
+      List subscriptions =
+          value.userData['message'][0]['status']['subscriptions'];
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xff242424),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: subscriptions
+              .map(
+                (e) => Column(
+                  children: [
+                    InkWell(
+                      onTap: () => {},
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: AspectRatio(
+                              aspectRatio: 1 / 1,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: darkGrey,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e,
+                                style: TextStyle(
+                                  color: white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(child: Container()),
+                          const SizedBox(width: 15),
+                          const CupertinoListTileChevron()
+                        ],
+                      ),
+                    ),
+                    _divider(),
+                  ],
+                ),
+              )
+              .toList(),
+        ),
+      );
+    });
   }
 
   _buildUpgradePackages() {
@@ -72,7 +156,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                         _packageListTile(
                           imageUrl: "",
                           title: e.value["name"],
-                          description: "Get access to all contents",
+                          description: e.value['description'],
                           onTap: () {
                             Navigator.push(
                               context,

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kanemaonline/api/auth_api.dart';
 import 'package:kanemaonline/data/countries.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/constants/input_decorations.dart';
 import 'package:kanemaonline/screens/auth/login.dart';
+import 'package:kanemaonline/screens/auth/verify_account.dart';
 import 'package:kanemaonline/widgets/button.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -23,11 +25,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  void onSubmit() {
+  void onSubmit() async {
     if (!formKey.currentState!.validate()) {
       return;
     } else {
       // Register account
+      await AuthAPI().register(
+        userid: '',
+        password: passwordController.text.trim(),
+        phonenumber: phoneNumberController.text.trim(),
+        name: '',
+        email: emailController.text.trim(),
+      );
+    }
+
+    //
+    try {} catch (err) {
+      debugPrint(err.toString());
     }
   }
 
@@ -211,8 +225,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             )
                           ],
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) =>
+                                        const VerifyAccountScreen()));
+                          },
+                          child: const Text("verify account screen"),
+                        ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1,
+                          height: MediaQuery.of(context).size.height * 0.05,
                         ),
                       ],
                     ),

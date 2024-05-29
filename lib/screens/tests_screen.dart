@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kanemaonline/api/ip_lookup_api.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/providers/user_info_provider.dart';
 import 'package:provider/provider.dart';
@@ -22,16 +23,14 @@ class _TestsScreenState extends State<TestsScreen> {
           children: [
             GestureDetector(
               onTap: () async {
-                // var data = await UsersAPI.getUserData(context: context);
-                Provider.of<UserInfoProvider>(context, listen: false)
-                    .refreshUserData();
-                // print(data);
+                var ipdata = await IPLookUpAPI().getIPData();
+                debugPrint(ipdata.toString());
               },
               child: Container(
                 decoration: BoxDecoration(
                   color: white,
                 ),
-                child: const Text("Test User Profile"),
+                child: const Text("Get Location Data"),
               ),
             ),
           ],

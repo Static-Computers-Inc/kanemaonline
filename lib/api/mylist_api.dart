@@ -54,7 +54,11 @@ class MyListAPI {
 
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        return body[0];
+        if (body == []) {
+          return body[0];
+        }
+
+        return {};
       } else {
         throw Exception("Couldn't get item:${response.body}");
       }

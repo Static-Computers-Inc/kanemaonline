@@ -8,12 +8,20 @@ class CustomIndicatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Material(
-        color: transparent,
-        child: CupertinoActivityIndicator(
-          color: white,
-          radius: 15,
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Material(
+            color: transparent,
+            child: CupertinoActivityIndicator(
+              color: white,
+              radius: 15,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text("Please Wait",
+              style: TextStyle(color: white, fontWeight: FontWeight.w700)),
+        ],
       ),
     );
   }

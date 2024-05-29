@@ -4,6 +4,9 @@ import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/providers/user_info_provider.dart';
 import 'package:kanemaonline/screens/screens.dart';
+import 'package:kanemaonline/screens/tests_screen.dart';
+import 'package:kanemaonline/services/auth_service.dart';
+import 'package:kanemaonline/wrapper.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -162,25 +165,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               ListTile(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await AuthService.signout(context: context);
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.pushReplacement(
                     context,
                     CupertinoPageRoute(
-                      builder: (context) => const HelpScreen(),
+                      builder: (context) => const Wrapper(),
                     ),
                   );
                 },
-                leading: const Icon(Icons.support_agent),
+                leading: const Icon(Icons.logout_rounded),
                 title: Text(
-                  "Help",
+                  "Logout",
                   style: TextStyle(
-                    color: white,
+                    color: red,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 subtitle: Text(
-                  "Help centre, contact us, privacy policy",
+                  "Logout from your account",
                   style: TextStyle(
                     fontSize: 13,
                     color: white.withOpacity(0.4),
@@ -188,9 +193,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
+
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
               ),
+
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       CupertinoPageRoute(
+              //         builder: (context) => const TestsScreen(),
+              //       ),
+              //     );
+              //   },
+              //   child: Text(
+              //     "Test Screen",
+              //     style: TextStyle(
+              //       color: white,
+              //     ),
+              //   ),
+              // ),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),

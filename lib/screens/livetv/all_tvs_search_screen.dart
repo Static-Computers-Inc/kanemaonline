@@ -114,6 +114,7 @@ class _AllTVsSearchScreenState extends State<AllTVsSearchScreen> {
                           results[index]['name'],
                         ],
                         thumbnail: results[index]['thumb_nail'],
+                        isPublished: results[index]['status']['publish'],
                       )
                     },
                     child: AspectRatio(

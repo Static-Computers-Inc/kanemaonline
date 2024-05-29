@@ -193,4 +193,39 @@ class PaymentAPI {
       throw Exception('Failed to initiate direct payment');
     }
   }
+
+  static Future notifyBackened(
+      {required String ref, required String status}) async {
+    final accessToken = Provider.of<AuthProvider>(
+      navigatorKey.currentState!.context,
+      listen: false,
+    ).accessToken;
+
+    final url = Uri.parse('$baseUrl/billing/create-payment-status');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken',
+    };
+
+    final body = {
+      "ref": ref,
+      "status": status,
+    };
+
+    debugPrint(body.toString());
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    debugPrint(response.body.toString());
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Failed to notify');
+    }
+  }
 }

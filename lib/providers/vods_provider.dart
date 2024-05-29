@@ -15,7 +15,10 @@ class VODsProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    _vods = await VodsAPI.getAllVods();
+    var vodsList = await VodsAPI.getAllVods();
+    vods.removeWhere((element) => element['status']['visibility'] == false);
+
+    _vods = vodsList;
 
     _isLoading = false;
     notifyListeners();

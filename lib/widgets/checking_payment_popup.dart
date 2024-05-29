@@ -13,6 +13,7 @@ class CheckingPaymentPopup extends StatefulWidget {
   final double amount;
   final Function onRetry;
   final bool isPayperView;
+  final String paymentMethod;
   const CheckingPaymentPopup({
     super.key,
     required this.depositID,
@@ -20,6 +21,7 @@ class CheckingPaymentPopup extends StatefulWidget {
     required this.amount,
     required this.onRetry,
     required this.isPayperView,
+    required this.paymentMethod,
   });
 
   @override
@@ -27,6 +29,8 @@ class CheckingPaymentPopup extends StatefulWidget {
 }
 
 class _CheckingPaymentPopupState extends State<CheckingPaymentPopup> {
+  bool _isDisposed = false;
+
   @override
   void initState() {
     super.initState();
@@ -35,45 +39,58 @@ class _CheckingPaymentPopupState extends State<CheckingPaymentPopup> {
 
   void checkPaymentStatus() async {
     for (var i = 0; i < 120; i++) {
+      if (_isDisposed) return; // Exit the loop if the widget is disposed
+
       try {
         await Future.delayed(const Duration(seconds: 5));
+        if (_isDisposed) {
+          return; // Exit the loop if the widget is disposed after delay
+        }
+
         final paymentStatus = await PaymentAPI.checkPaymentStatus(
           depositID: widget.depositID,
         );
         if (paymentStatus.isNotEmpty) {
-          if (paymentStatus[0]['status'] == "ACCEPTED") {
+          if (paymentStatus[0]['status'] == "ACCEPTED" ||
+              paymentStatus[0]['status'] == "PENDING") {
             debugPrint("Payment Status: ${paymentStatus[0]['status']}");
           } else if (paymentStatus[0]['status'] == "COMPLETED") {
             debugPrint("Payment Status: ${paymentStatus[0]['status']}");
-            Navigator.pop(context);
-            ProvidersInit.updateAfterPayment(context: context);
-            return showCupertinoModalPopup(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => PaymentSuccessPopup(
-                packageName: widget.packageName,
-                depositID: widget.depositID,
-                amount: widget.amount,
-                isPayPerView: widget.isPayperView,
-              ),
-            );
+            if (!_isDisposed) {
+              Navigator.pop(context);
+              ProvidersInit.updateAfterPayment(context: context);
+              return showCupertinoModalPopup(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => PaymentSuccessPopup(
+                  packageName: widget.packageName,
+                  depositID: widget.depositID,
+                  amount: widget.amount,
+                  isPayPerView: widget.isPayperView,
+                  paymentMethod: widget.paymentMethod,
+                ),
+              );
+            }
           } else {
             BotToasts.showToast(
               message: "Transaction Failed. Please try again.",
               isError: true,
             );
-            Navigator.pop(context);
-            return showCupertinoModalPopup(
-              context: context,
-              builder: (context) => PaymentFailedPopUp(
-                packageName: widget.packageName,
-                depositID: widget.depositID,
-                amount: widget.amount,
-                failedReason: paymentStatus[0]['failure_reason'],
-                onRetry: widget.onRetry,
-                isPayperview: widget.isPayperView,
-              ),
-            );
+            if (!_isDisposed) {
+              Navigator.pop(context);
+              return showCupertinoModalPopup(
+                context: context,
+                builder: (context) => PaymentFailedPopUp(
+                  packageName: widget.packageName,
+                  depositID: widget.depositID,
+                  amount: widget.amount,
+                  paymentMethod: widget.paymentMethod,
+                  failedReason: paymentStatus[0]['failure_reason'] ?? "",
+                  onRetry: widget.onRetry,
+                  isPayperview: widget.isPayperView,
+                ),
+              );
+            }
           }
         }
       } on Exception catch (e) {
@@ -84,7 +101,7 @@ class _CheckingPaymentPopupState extends State<CheckingPaymentPopup> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _isDisposed = true;
     super.dispose();
   }
 
@@ -95,6 +112,10 @@ class _CheckingPaymentPopupState extends State<CheckingPaymentPopup> {
       child: Container(
         decoration: BoxDecoration(
           color: white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
         ),
         // height: MediaQuery.of(context).size.height * 0.45,
         child: Column(

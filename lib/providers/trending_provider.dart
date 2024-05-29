@@ -5,11 +5,14 @@ class TrendingProvider extends ChangeNotifier {
   List _trends = [];
   List get trends => _trends;
 
-  final bool _isLoading = false;
+  bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   void getAllTrends() async {
+    _isLoading = true;
+    notifyListeners();
     _trends = await TrendingAPI.getAllTrending();
+    _isLoading = false;
     notifyListeners();
   }
 }

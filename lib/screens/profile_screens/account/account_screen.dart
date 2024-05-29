@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/screens/profile_screens/account/edit_profile_screen.dart';
@@ -25,21 +24,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Account"),
-        actions: [
-          GestureDetector(
-              onTap: () async {
-                await AuthService.signout(context: context);
-                Navigator.popUntil(context, (route) => route.isFirst);
-                Navigator.pushReplacement(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => const Wrapper(),
-                  ),
-                );
-              },
-              child: Icon(Icons.logout, color: red)),
-          const SizedBox(width: 15),
-        ],
+        actions: const [],
       ),
       body: Column(
         children: [

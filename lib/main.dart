@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/providers_init.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
@@ -18,7 +21,8 @@ import 'package:statusbarz/statusbarz.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [
@@ -28,19 +32,23 @@ void main() {
         ),
         ChangeNotifierProvider(create: (_) => VODsProvider()..init()),
         ChangeNotifierProvider(create: (_) => AuthProvider()..getAuthData()),
+        ChangeNotifierProvider(
+          create: (_) => UserInfoProvider()..refreshUserData(),
+        ),
         ChangeNotifierProvider(create: (_) => LiveEventsProvider()..init()),
         ChangeNotifierProvider(
           create: (_) => PackagesProvider()..getPackages(),
         ),
         ChangeNotifierProvider(create: (_) => MyListProvider()),
-        ChangeNotifierProvider(
-          create: (_) => UserInfoProvider()..refreshUserData(),
-        ),
         ChangeNotifierProvider(create: (_) => NavigationBarProvider())
       ],
       child: const MyApp(),
     ),
   );
+
+  WidgetsBinding.instance.addPostFrameCallback((dsssasssaAaAaaA) async {
+    FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_KEEP_SCREEN_ON);
+  });
 }
 
 class MyApp extends StatefulWidget {

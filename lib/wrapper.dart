@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
 import 'package:kanemaonline/screens/screens.dart';
+import 'package:kanemaonline/widgets/activity_loading_widget.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatefulWidget {
@@ -17,12 +17,7 @@ class _WrapperState extends State<Wrapper> {
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         if (authProvider.isAuthLoading) {
-          return Center(
-            child: CupertinoActivityIndicator(
-              color: white,
-              radius: 15,
-            ),
-          );
+          return const Center(child: CustomIndicatorWidget());
         } else {
           if (authProvider.isLoggedIn) {
             return const RootApp();

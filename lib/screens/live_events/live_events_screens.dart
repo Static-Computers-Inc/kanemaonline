@@ -5,6 +5,7 @@ import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/live_events_provider.dart';
 import 'package:kanemaonline/providers/my_list_provider.dart';
+import 'package:kanemaonline/screens/details_pages/live_event_details.dart';
 import 'package:kanemaonline/screens/live_events/all_events_search_screen.dart';
 
 import 'package:kanemaonline/screens/players/video_player.dart';
@@ -113,6 +114,7 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
           contentName: mediaInfo['name'],
           thumbnail: mediaInfo['thumb_nail'],
           price: mediaInfo['price'],
+          isPublished: mediaInfo['status']['publish'],
         );
       },
       myListAction: () {
@@ -125,7 +127,14 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
           mediaType: 'event',
         );
       },
-      infoAction: () {},
+      infoAction: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => SingleEventDetails(data: mediaInfo),
+          ),
+        );
+      },
     );
   }
 
@@ -147,22 +156,11 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
         TrendingListSMWidget(
             trending: trending,
             clickableAction: (data) {
-              WatchBridgeFunctions.watchLiveBridge(
-                watchLive: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => VideoPlayerScreen(
-                        title: data['name'],
-                        videoUrl: data['stream_key'],
-                      ),
-                    ),
-                  );
-                },
-                packages: ["Kanema Events", "KanemaSupa", data['name']],
-                contentName: data['name'],
-                thumbnail: data['thumb_nail'],
-                price: data['price'],
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => SingleEventDetails(data: data),
+                ),
               );
             }),
       ],
@@ -210,22 +208,11 @@ class _LiveEventsScreenState extends State<LiveEventsScreen> {
         TrendingListSMWidget(
           trending: trending,
           clickableAction: (data) {
-            WatchBridgeFunctions.watchLiveBridge(
-              watchLive: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => VideoPlayerScreen(
-                      title: data['name'],
-                      videoUrl: data['stream_key'],
-                    ),
-                  ),
-                );
-              },
-              packages: ["Kanema Events", "KanemaSupa", data['name']],
-              contentName: data['name'],
-              thumbnail: data['thumb_nail'],
-              price: data['price'],
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => SingleEventDetails(data: data),
+              ),
             );
           },
         ),
