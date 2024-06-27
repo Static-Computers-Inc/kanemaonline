@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
-import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/widgets/trending_list_sm_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -152,28 +150,7 @@ class _SingleVideoDetailsState extends State<SingleVideoDetails> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: GestureDetector(
-        onTap: () {
-          WatchBridgeFunctions.watchVideoBridge(
-            watchVideo: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => VideoPlayerScreen(
-                  videoUrl: widget.data['stream_key'],
-                  title: widget.data['name'],
-                ),
-              ),
-            ),
-            packages: [
-              'KanemaFlex',
-              'KanemaSupa',
-              widget.data['name'],
-            ],
-            contentName: widget.data['name'],
-            thumbnail: widget.data['thumb_nail'],
-            price: widget.data['price'],
-            isPublished: widget.data['status']['publish'],
-          );
-        },
+        onTap: () {},
         child: Container(
           padding: const EdgeInsets.symmetric(
             vertical: 8,
@@ -211,7 +188,7 @@ class _SingleVideoDetailsState extends State<SingleVideoDetails> {
         horizontal: 15,
       ),
       child: Text(
-        widget.data['description'],
+        widget.data['description'] ?? "No Description",
         style: TextStyle(
           color: white,
           fontWeight: FontWeight.w600,

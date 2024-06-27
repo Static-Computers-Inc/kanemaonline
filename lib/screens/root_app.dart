@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/providers_init.dart';
 import 'package:kanemaonline/providers/navigation_bar_provider.dart';
 import 'package:kanemaonline/screens/screens.dart';
+import 'package:kanemaonline/widgets/bot_toasts.dart';
 import 'dart:io' as io;
 
 import 'package:provider/provider.dart';
+import 'package:rotating_icon_button/rotating_icon_button.dart';
 
 class RootApp extends StatefulWidget {
   const RootApp({super.key});
@@ -60,8 +63,6 @@ class _RootAppState extends State<RootApp> {
               right: 0,
               child: Container(
                 padding: EdgeInsets.only(
-                  left: 25,
-                  right: 25,
                   bottom: io.Platform.isIOS
                       ? MediaQuery.of(context).padding.bottom
                       : MediaQuery.of(context).padding.bottom + 10,
@@ -82,43 +83,96 @@ class _RootAppState extends State<RootApp> {
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: navItems
-                      .map(
-                        (e) => GestureDetector(
-                          onTap: () => {
-                            Provider.of<NavigationBarProvider>(
-                              context,
-                              listen: false,
-                            ).changeIndex(
-                              navItems.indexOf(e),
-                            )
-                          },
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(
-                                e['icon']!,
-                                width: navItems.indexOf(e) == 2 ? 24 : 20,
-                                color: value.currentIndex == navItems.indexOf(e)
-                                    ? white
-                                    : white.withOpacity(0.5),
+                  children: navItems.map(
+                    (e) {
+                      // REFRESH
+                      if (navItems.indexOf(e) == 0 && value.currentIndex == 0) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width /
+                              navItems.length,
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () {},
+                              child: Column(
+                                children: [
+                                  RotatingIconButton(
+                                    padding: EdgeInsets.zero,
+                                    background: transparent,
+                                    onTap: () async {
+                                      await ProvidersInit.refreshProviders(
+                                        context: context,
+                                      );
+                                    },
+                                    child: SvgPicture.asset(
+                                      "assets/svg/refresh.svg",
+                                      width: navItems.indexOf(e) == 2 ? 24 : 20,
+                                      color: value.currentIndex ==
+                                              navItems.indexOf(e)
+                                          ? white
+                                          : white.withOpacity(0.5),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    "Refersh",
+                                    style: TextStyle(
+                                      color: value.currentIndex ==
+                                              navItems.indexOf(e)
+                                          ? white
+                                          : white.withOpacity(0.5),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 5),
-                              Text(
-                                e['title'].toString(),
-                                style: TextStyle(
+                            ),
+                          ),
+                        );
+                      }
+
+                      return SizedBox(
+                        width:
+                            MediaQuery.of(context).size.width / navItems.length,
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: () => {
+                              Provider.of<NavigationBarProvider>(
+                                context,
+                                listen: false,
+                              ).changeIndex(
+                                navItems.indexOf(e),
+                              )
+                            },
+                            child: Column(
+                              children: [
+                                SvgPicture.asset(
+                                  e['icon']!,
+                                  width: navItems.indexOf(e) == 2 ? 24 : 20,
                                   color:
                                       value.currentIndex == navItems.indexOf(e)
                                           ? white
                                           : white.withOpacity(0.5),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 5),
+                                Text(
+                                  e['title'].toString(),
+                                  style: TextStyle(
+                                    color: value.currentIndex ==
+                                            navItems.indexOf(e)
+                                        ? white
+                                        : white.withOpacity(0.5),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      )
-                      .toList(),
+                      );
+                    },
+                  ).toList(),
                 ),
               ),
             ),

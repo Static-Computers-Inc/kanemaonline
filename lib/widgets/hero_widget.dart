@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -5,15 +7,18 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/api/mylist_api.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/betterlogger.dart';
 import 'package:kanemaonline/providers/my_list_provider.dart';
+import 'package:kanemaonline/widgets/bot_toasts.dart';
 import 'package:provider/provider.dart';
 
-class HeroWidget extends StatelessWidget {
+class HeroWidget extends StatefulWidget {
   final String itemId;
   final String imageUrl;
   final Function playAction;
   final Function myListAction;
   final Function infoAction;
+
   const HeroWidget({
     super.key,
     required this.imageUrl,
@@ -22,6 +27,30 @@ class HeroWidget extends StatelessWidget {
     required this.infoAction,
     required this.itemId,
   });
+
+  @override
+  _HeroWidgetState createState() => _HeroWidgetState();
+}
+
+class _HeroWidgetState extends State<HeroWidget> {
+  ValueNotifier<bool> loading = ValueNotifier(false);
+  ValueNotifier<bool> isInList = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    checkIsInList();
+  }
+
+  checkIsInList() {
+    List value = Provider.of<MyListProvider>(context, listen: false).myList;
+
+    isInList.value = value.any(
+      (element) => element["_id"] == widget.itemId,
+    );
+
+    isInList.notifyListeners();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +62,7 @@ class HeroWidget extends StatelessWidget {
           color: red,
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: CachedNetworkImageProvider(imageUrl),
+            image: CachedNetworkImageProvider(widget.imageUrl),
           ),
         ),
         child: Stack(
@@ -90,7 +119,7 @@ class HeroWidget extends StatelessWidget {
 
   Widget _buildPlayButton() {
     return Bounceable(
-      onTap: () => playAction(),
+      onTap: () => widget.playAction(),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
@@ -123,60 +152,117 @@ class HeroWidget extends StatelessWidget {
 
   Widget _buildMyListButton() {
     return Bounceable(
-      onTap: () => myListAction(),
+      onTap: () => widget.myListAction(),
       child: Consumer<MyListProvider>(
         builder: (context, value, child) {
-          bool isInList = value.myList.any(
-            (element) => element["id"] == itemId,
-          );
-          return GestureDetector(
-            onTap: () async {
-              try {
-                bool result = await MyListAPI().addItem(id: itemId);
-                debugPrint(result.toString());
-                if (result) {
-                  Provider.of<MyListProvider>(context, listen: false).init();
-                }
-              } catch (err) {
-                debugPrint(err.toString());
-              }
-              debugPrint(itemId);
-            },
-            child: BlurryContainer(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 5,
-              ),
-              borderRadius: BorderRadius.circular(4),
-              color: white.withOpacity(0.1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  isInList
-                      ? SvgPicture.asset(
-                          "assets/svg/check.svg",
-                          key: ValueKey(isInList),
-                          color: white,
-                          width: 24,
-                        )
-                      : SvgPicture.asset(
-                          "assets/svg/add.svg",
-                          key: ValueKey(!isInList),
-                          width: 24,
-                          color: white,
+          checkIsInList();
+
+          return ValueListenableBuilder(
+              valueListenable: isInList,
+              builder: (context, value, _) {
+                return GestureDetector(
+                  onTap: () async {
+                    if (value) {
+                      try {
+                        await MyListAPI().removeItem(id: widget.itemId);
+                        BotToasts.showToast(
+                          message: "Removed from My List",
+                          isError: false,
+                        );
+                        loading.value = false;
+                        isInList.value = false;
+                        isInList.notifyListeners();
+                        Provider.of<MyListProvider>(context, listen: false)
+                            .init();
+                      } catch (err) {
+                        loading.value = false;
+                        BotToasts.showToast(
+                          message: "Failed to remove item from My List",
+                          isError: true,
+                        );
+                        console.log(err.toString());
+                      }
+                      return;
+                    }
+
+                    try {
+                      loading.value = true;
+                      bool result =
+                          await MyListAPI().addItem(id: widget.itemId);
+                      BotToasts.showToast(
+                        message: "Added to My List",
+                        isError: false,
+                      );
+                      debugPrint(result.toString());
+                      isInList.value = false;
+                      isInList.notifyListeners();
+                      loading.value = false;
+                      if (result) {
+                        Provider.of<MyListProvider>(context, listen: false)
+                            .init();
+                      }
+                    } catch (err) {
+                      debugPrint(err.toString());
+                      loading.value = false;
+                    }
+                    debugPrint(widget.itemId);
+                  },
+                  child: BlurryContainer(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 5,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                    color: white.withOpacity(0.1),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ValueListenableBuilder<bool>(
+                          valueListenable: loading,
+                          builder: (context, value, _) {
+                            return Builder(
+                              builder: (context) {
+                                if (value) {
+                                  return SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: CircularProgressIndicator(
+                                      color: white,
+                                      strokeWidth: 2,
+                                    ),
+                                  );
+                                } else {
+                                  return value
+                                      ? SvgPicture.asset(
+                                          "assets/svg/check.svg",
+                                          key: ValueKey(value),
+                                          color: green,
+                                          width: 24,
+                                        )
+                                      : SvgPicture.asset(
+                                          "assets/svg/add.svg",
+                                          key: ValueKey(!value),
+                                          width: 24,
+                                          color: white,
+                                        );
+                                }
+                              },
+                            );
+                          },
                         ),
-                  const SizedBox(width: 5),
-                  Text(
-                    'My List',
-                    style: TextStyle(
-                      color: white,
-                      fontWeight: FontWeight.w700,
+                        const SizedBox(width: 5),
+                        Text(
+                          'My List',
+                          style: TextStyle(
+                            color: white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          );
+                );
+              });
         },
       ),
     );
@@ -184,7 +270,7 @@ class HeroWidget extends StatelessWidget {
 
   Widget _buildInfoButton() {
     return Bounceable(
-      onTap: () => infoAction(),
+      onTap: () => widget.infoAction(),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,

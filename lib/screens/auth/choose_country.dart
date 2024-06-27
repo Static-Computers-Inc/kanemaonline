@@ -2,19 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kanemaonline/data/countries.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/screens/generics/choose_country_popup.dart';
+import 'package:kanemaonline/screens/generics/choose_region_popup.dart';
 import 'package:kanemaonline/screens/screens.dart';
 import 'package:kanemaonline/widgets/button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class ChooseCountry extends StatefulWidget {
-  const ChooseCountry({super.key});
+class ChooseRegion extends StatefulWidget {
+  const ChooseRegion({super.key});
 
   @override
-  State<ChooseCountry> createState() => _ChooseCountryState();
+  State<ChooseRegion> createState() => _ChooseRegionState();
 }
 
-class _ChooseCountryState extends State<ChooseCountry> {
+class _ChooseRegionState extends State<ChooseRegion> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -74,11 +74,22 @@ class _ChooseCountryState extends State<ChooseCountry> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        const Text(
+                          "Select your preffered account origin for content and payment.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
                         GestureDetector(
                           onTap: () async {
                             var result = await showCupertinoModalBottomSheet(
+                              barrierColor: black.withOpacity(0.8),
+                              isDismissible: false,
                               context: context,
-                              builder: (context) => const ChooseCountryPopup(),
+                              builder: (context) => const ChooseRegionPopup(),
                             );
 
                             if (result != null) {
@@ -103,14 +114,12 @@ class _ChooseCountryState extends State<ChooseCountry> {
                                         element['code'] == selectedCode)
                                     .first['flag']
                                     .toString(),
-                              ),
-                              const SizedBox(width: 5),
-                              const Icon(
-                                CupertinoIcons.chevron_down,
-                                size: 14,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
                               ),
                               const SizedBox(
-                                width: 15,
+                                width: 10,
                               ),
                               Text(
                                 countries
@@ -122,9 +131,12 @@ class _ChooseCountryState extends State<ChooseCountry> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                              Expanded(child: Container()),
+                              const Icon(CupertinoIcons.chevron_down),
                             ]),
                           ),
                         ),
+                        const SizedBox(height: 20),
                         const SizedBox(height: 20),
                         Button(
                           text: "Continue",
@@ -133,7 +145,7 @@ class _ChooseCountryState extends State<ChooseCountry> {
                               context,
                               CupertinoPageRoute(
                                 builder: (context) => RegisterScreen(
-                                  code: selectedCode,
+                                  region: selectedCode,
                                 ),
                               ),
                             );

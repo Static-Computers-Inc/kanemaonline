@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
@@ -7,9 +6,9 @@ import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/live_events_provider.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
-import 'package:kanemaonline/screens/players/live_tvs_player.dart';
-import 'package:kanemaonline/screens/players/video_player.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
 import 'package:kanemaonline/widgets/all_media_search_bar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class SearchAllScreen extends StatefulWidget {
@@ -106,100 +105,149 @@ class _SearchAllScreenState extends State<SearchAllScreen> {
                 ),
                 itemBuilder: (context, index) {
                   return Bounceable(
-                    onTap: () => {
-                      debugPrint(results[index]['type'].toString()),
-                      if (results[index]['type'] == 'TV')
-                        {
-                          WatchBridgeFunctions.watchTVBridge(
-                            watchTV: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => LiveTvsPlayerScreen(
-                                    name: results[index]['name'],
-                                    streamKey: results[index]['stream_key'],
-                                  ),
-                                ),
-                              );
-                            },
-                            contentName: results[index]['name'],
-                            thumbnail: results[index]['thumb_nail'],
-                            price: results[index]['price'],
-                            packages: [
-                              'KanemaSupa',
-                              "Kiliye Kiliye",
-                              results[index]['name']
-                            ],
-                            isPublished: results[index]['status']['publish'],
-                          )
-                        }
-                      else if (results[index]['type'] == 'Video')
-                        {
-                          WatchBridgeFunctions.watchTVBridge(
-                            watchTV: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => VideoPlayerScreen(
-                                    videoUrl: results[index]['stream_key'],
-                                    title: results[index]['name'],
-                                  ),
-                                ),
-                              );
-                            },
-                            contentName: results[index]['name'],
-                            thumbnail: results[index]['thumb_nail'],
-                            price: results[index]['price'],
-                            packages: [
-                              'KanemaSupa',
-                              "KiliyeFlex",
-                              results[index]['name']
-                            ],
-                            isPublished: results[index]['status']['publish'],
-                          ),
-                        }
-                      else if (results[index]['type'] == 'Event')
-                        {
-                          WatchBridgeFunctions.watchTVBridge(
-                            watchTV: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => VideoPlayerScreen(
-                                    videoUrl: results[index]['stream_key'],
-                                    title: results[index]['name'],
-                                  ),
-                                ),
-                              );
-                            },
-                            contentName: results[index]['name'],
-                            thumbnail: results[index]['thumb_nail'],
-                            price: results[index]['price'],
-                            packages: [
-                              'KanemaSupa',
-                              "Kiliye Events",
-                              results[index]['name']
-                            ],
-                            isPublished: results[index]['status']['publish'],
-                          )
-                        }
+                    onTap: () {
+                      dynamic mediaInfo = results[index];
+
+                      // debugPrint(results[index]['type'].toString()),
+
+                      if (results[index]['type'] == 'TV') {
+                        WatchBridgeFunctions.watchLiveBridge(
+                          id: mediaInfo['_id'],
+                          watchLive: () {
+                            showCupertinoModalBottomSheet(
+                              topRadius: Radius.zero,
+                              backgroundColor: black,
+                              barrierColor: black,
+                              context: context,
+                              builder: (context) => MiniPlayerPopUp(
+                                title: mediaInfo['name'],
+                                videoUrl: mediaInfo['stream_key'],
+                                data: mediaInfo,
+                              ),
+                            );
+                          },
+                          packages: [
+                            "KiliyeEvents",
+                            "KanemaSupa",
+                            mediaInfo['name']
+                          ],
+                          contentName: mediaInfo['name'],
+                          thumbnail: mediaInfo['thumb_nail'],
+                          price: mediaInfo['price'] ?? 100,
+                          isPublished: mediaInfo['status']['publish'] ?? false,
+                        );
+                      } else if (results[index]['type'] == 'Video') {
+                        WatchBridgeFunctions.watchVideoBridge(
+                          id: mediaInfo['_id'],
+                          watchVideo: () {
+                            showCupertinoModalBottomSheet(
+                              topRadius: Radius.zero,
+                              backgroundColor: black,
+                              barrierColor: black,
+                              context: context,
+                              builder: (context) => MiniPlayerPopUp(
+                                title: mediaInfo['name'],
+                                videoUrl: mediaInfo['stream_key'],
+                                data: mediaInfo,
+                              ),
+                            );
+                          },
+                          packages: [
+                            "Kiliye Kiliye",
+                            "KanemaFlex",
+                            mediaInfo['name']
+                          ],
+                          contentName: mediaInfo['name'],
+                          thumbnail: mediaInfo['thumb_nail'],
+                          price: mediaInfo['price'] ?? 100,
+                          isPublished: mediaInfo['status']['publish'] ?? false,
+                        );
+                      } else if (results[index]['type'] == 'Event') {
+                        WatchBridgeFunctions.watchLiveBridge(
+                          id: mediaInfo['_id'],
+                          watchLive: () {
+                            showCupertinoModalBottomSheet(
+                              topRadius: Radius.zero,
+                              backgroundColor: black,
+                              barrierColor: black,
+                              context: context,
+                              builder: (context) => MiniPlayerPopUp(
+                                title: mediaInfo['name'],
+                                videoUrl: mediaInfo['stream_key'],
+                                data: mediaInfo,
+                              ),
+                            );
+                          },
+                          packages: [
+                            "KanemaSupa",
+                            "KanemaEvents",
+                            mediaInfo['name']
+                          ],
+                          contentName: mediaInfo['name'],
+                          thumbnail: mediaInfo['thumb_nail'],
+                          price: mediaInfo['price'] ?? 100,
+                          isPublished: mediaInfo['status']['publish'] ?? false,
+                        );
+                      }
                     },
                     child: AspectRatio(
                       aspectRatio: 1 / 1.2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: darkGrey.withOpacity(0.5),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                results[index]['thumb_nail'],
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(3),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: darkGrey.withOpacity(0.5),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider(
+                                      results[index]['thumb_nail'],
+                                    ),
+                                  ),
+                                  borderRadius: BorderRadius.circular(7),
+                                ),
                               ),
                             ),
-                            borderRadius: BorderRadius.circular(7),
                           ),
-                        ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    black.withOpacity(0.9),
+                                    black.withOpacity(0.0)
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    results[index]['name'],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: white,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   );

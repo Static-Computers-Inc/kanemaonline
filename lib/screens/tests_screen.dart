@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanemaonline/api/ip_lookup_api.dart';
-import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/providers/user_info_provider.dart';
-import 'package:provider/provider.dart';
+
 
 class TestsScreen extends StatefulWidget {
   const TestsScreen({super.key});
@@ -12,6 +9,11 @@ class TestsScreen extends StatefulWidget {
 }
 
 class _TestsScreenState extends State<TestsScreen> {
+  TextEditingController controller = TextEditingController();
+  final String _errorText = "";
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,21 +23,40 @@ class _TestsScreenState extends State<TestsScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () async {
-                var ipdata = await IPLookUpAPI().getIPData();
-                debugPrint(ipdata.toString());
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: white,
-                ),
-                child: const Text("Get Location Data"),
+            // GestureDetector(
+            //     onTap: () {
+            //       showCupertinoModalBottomSheet(
+            //         topRadius: Radius.zero,
+            //         context: context,
+            //         builder: (context) => const MiniPlayerPopUp(),
+            //       );
+            //     },
+            //     child: Container(
+            //       decoration: BoxDecoration(
+            //         color: white,
+            //       ),
+            //       child: const Text("Test 1"),
+            //     )),
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.purple,
+                    ),
+                  ),
+                  // seekBar()
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),
     );
   }
+
+  // Widget seekBar() {
+
+  // }
 }

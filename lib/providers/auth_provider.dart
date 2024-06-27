@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kanemaonline/main.dart';
-import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/providers/user_info_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

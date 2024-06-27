@@ -14,7 +14,7 @@ class BotToasts {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
               decoration: BoxDecoration(
-                color: isError ? red : Colors.grey[900],
+                color: isError ? red : green,
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Text(
@@ -29,4 +29,6 @@ class BotToasts {
           );
         });
   }
+
+  static void showText({required String message}) {}
 }

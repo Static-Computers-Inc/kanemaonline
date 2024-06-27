@@ -54,7 +54,7 @@ class PaymentAPI {
     final body = {
       "phone": phoneNumber,
       "userid": userId,
-      "price": amount,
+      "price": 100, // amount,
       "package_name": packageName,
       "duration": duration,
       "payment_gateway": paymentMethod,

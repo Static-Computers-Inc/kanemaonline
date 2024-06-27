@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LaunchUrl {
+class LaunchUrlHelper {
   static launch(String url, {Function? onReturn}) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       var result = await launchUrl(

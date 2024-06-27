@@ -6,7 +6,9 @@ import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
 import 'package:kanemaonline/screens/players/live_tvs_player.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
 import 'package:kanemaonline/widgets/all_media_search_bar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class AllTVsSearchScreen extends StatefulWidget {
@@ -95,16 +97,19 @@ class _AllTVsSearchScreenState extends State<AllTVsSearchScreen> {
                   return Bounceable(
                     onTap: () => {
                       WatchBridgeFunctions.watchTVBridge(
+                        id: results[index]['_id'],
                         contentName: results[index]['name'],
                         price: results[index]['price'],
                         watchTV: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => LiveTvsPlayerScreen(
-                                name: results[index]['name'],
-                                streamKey: results[index]['stream_key'],
-                              ),
+                          showCupertinoModalBottomSheet(
+                            topRadius: Radius.zero,
+                            backgroundColor: black,
+                            barrierColor: black,
+                            context: context,
+                            builder: (context) => MiniPlayerPopUp(
+                              title: results[index]['name'],
+                              videoUrl: results[index]['stream_key'],
+                              data: results[index],
                             ),
                           );
                         },

@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/betterlogger.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
 import 'package:kanemaonline/screens/details_pages/single_video_details.dart';
-import 'package:kanemaonline/screens/players/video_player.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
 import 'package:kanemaonline/screens/videos/all_videos_search_screen.dart';
 import 'package:kanemaonline/widgets/error_widget.dart';
 import 'package:kanemaonline/widgets/hero_search_appbar.dart';
 import 'package:kanemaonline/widgets/hero_widget.dart';
 import 'package:kanemaonline/widgets/scaffold_wrapper.dart';
 import 'package:kanemaonline/widgets/trending_list_sm_widget.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 
@@ -107,35 +109,36 @@ class _VideosScreenState extends State<VideosScreen> {
     required Map<dynamic, dynamic> mediaInfo,
   }) {
     return HeroWidget(
-      itemId: "",
+      itemId: mediaInfo['_id'],
       imageUrl: mediaInfo['thumb_nail'],
       playAction: () {
-        WatchBridgeFunctions.watchVideoBridge(
-          watchVideo: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => VideoPlayerScreen(
-                  videoUrl: mediaInfo['stream_key'],
-                  title: mediaInfo['name'],
-                ),
+        var data = mediaInfo;
+        WatchBridgeFunctions.watchTVBridge(
+          id: data['_id'],
+          watchTV: () {
+            showCupertinoModalBottomSheet(
+              topRadius: Radius.zero,
+              context: context,
+              backgroundColor: black,
+              barrierColor: black,
+              builder: (context) => MiniPlayerPopUp(
+                title: data['name'],
+                videoUrl: data['stream_key'],
+                data: data,
               ),
             );
           },
-          packages: [
-            'KanemaFlex',
-            'KanemaSupa',
-            mediaInfo['name'],
-          ],
-          contentName: mediaInfo['name'],
-          thumbnail: mediaInfo['thumb_nail'],
-          price: mediaInfo['price'],
-          isPublished: mediaInfo['status']['publish'],
+          packages: ["Kiliye Kiliye", "KanemaSupa", data['name']],
+          contentName: data['name'],
+          thumbnail: data['thumb_nail'],
+          price: data['price'],
+          isPublished: data['status']['publish'],
         );
       },
       myListAction: () {
+        console.log(mediaInfo);
         Provider.of<MyListProvider>(context, listen: false).addToMyList(
-          id: mediaInfo['id'],
+          id: mediaInfo['_id'],
           name: mediaInfo['name'],
           description: mediaInfo['description'],
           thumbnail: mediaInfo['thumb_nail'],
@@ -172,37 +175,31 @@ class _VideosScreenState extends State<VideosScreen> {
           ),
         ),
         TrendingListSMWidget(
-            trending: trending,
-            clickableAction: (data) {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => SingleVideoDetails(data: data),
-                ),
-              );
-              // WatchBridgeFunctions.watchVideoBridge(
-              //   watchVideo: () {
-              //     Navigator.push(
-              //       context,
-              //       CupertinoPageRoute(
-              //         builder: (context) => VideoPlayerScreen(
-              //           videoUrl: data['stream_key'],
-              //           title: data['name'],
-              //         ),
-              //       ),
-              //     );
-              //   },
-              //   packages: [
-              //     'KanemaFlex',
-              //     'KanemaSupa',
-              //     data['name'],
-              //   ],
-              //   contentName: data['name'],
-              //   thumbnail: data['thumb_nail'],
-              //   price: data['price'],
-              //   isPublished: data['publish'],
-              // );
-            }),
+          trending: trending,
+          clickableAction: (data) {
+            WatchBridgeFunctions.watchVideoBridge(
+              id: data['_id'],
+              watchVideo: () {
+                showCupertinoModalBottomSheet(
+                  topRadius: Radius.zero,
+                  context: context,
+                  backgroundColor: black,
+                  barrierColor: black,
+                  builder: (context) => MiniPlayerPopUp(
+                    title: data['name'],
+                    videoUrl: data['stream_key'],
+                    data: data,
+                  ),
+                );
+              },
+              packages: ["Kiliye Kiliye", "KanemaSupa", data['name']],
+              contentName: data['name'],
+              thumbnail: data['thumb_nail'],
+              price: data['price'],
+              isPublished: data['status']['publish'],
+            );
+          },
+        ),
       ],
     );
   }
@@ -248,11 +245,26 @@ class _VideosScreenState extends State<VideosScreen> {
         TrendingListSMWidget(
             trending: trending,
             clickableAction: (data) {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => SingleVideoDetails(data: data),
-                ),
+              WatchBridgeFunctions.watchVideoBridge(
+                id: data['_id'],
+                watchVideo: () {
+                  showCupertinoModalBottomSheet(
+                    topRadius: Radius.zero,
+                    context: context,
+                    backgroundColor: black,
+                    barrierColor: black,
+                    builder: (context) => MiniPlayerPopUp(
+                      title: data['name'],
+                      videoUrl: data['stream_key'],
+                      data: data,
+                    ),
+                  );
+                },
+                packages: ["Kiliye Kiliye", "KanemaSupa", data['name']],
+                contentName: data['name'],
+                thumbnail: data['thumb_nail'],
+                price: data['price'],
+                isPublished: data['status']['publish'],
               );
             }),
       ],

@@ -5,8 +5,10 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/live_events_provider.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
 import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/widgets/all_media_search_bar.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class AllEventsSearchScreen extends StatefulWidget {
@@ -95,14 +97,17 @@ class _AllEventsSearchScreenState extends State<AllEventsSearchScreen> {
                   return Bounceable(
                     onTap: () => {
                       WatchBridgeFunctions.watchVideoBridge(
+                        id: results[index]['_id'],
                         watchVideo: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => VideoPlayerScreen(
-                                title: results[index]['name'],
-                                videoUrl: results[index]['stream_key'],
-                              ),
+                          showCupertinoModalBottomSheet(
+                            topRadius: Radius.zero,
+                            backgroundColor: black,
+                            barrierColor: black,
+                            context: context,
+                            builder: (context) => MiniPlayerPopUp(
+                              title: results[index]['name'],
+                              videoUrl: results[index]['stream_key'],
+                              data: results[index],
                             ),
                           );
                         },
@@ -114,7 +119,8 @@ class _AllEventsSearchScreenState extends State<AllEventsSearchScreen> {
                         contentName: results[index]['name'],
                         thumbnail: results[index]['thumb_nail'],
                         price: results[index]['price'],
-                        isPublished: results[index]['status']['publish'],
+                        isPublished:
+                            results[index]['status']['publish'] ?? false,
                       )
                     },
                     child: AspectRatio(

@@ -12,16 +12,17 @@ class _PayPerViewScreenState extends State<PayPerViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: white,
-              ),
-              child: const Text("Pay Per View"),
-            )
-          ],
-        ));
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: white,
+            ),
+            child: const Text("Pay Per View"),
+          )
+        ],
+      ),
+    );
   }
 }

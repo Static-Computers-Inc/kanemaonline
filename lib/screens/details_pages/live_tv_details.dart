@@ -2,14 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
-import 'package:kanemaonline/providers/live_events_provider.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
-import 'package:kanemaonline/providers/vods_provider.dart';
-import 'package:kanemaonline/screens/players/live_tvs_player.dart';
-import 'package:kanemaonline/screens/players/video_player.dart';
 import 'package:kanemaonline/widgets/trending_list_sm_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -122,30 +116,7 @@ class _SingleTVDetailsState extends State<SingleTVDetails> {
                 child: SafeArea(
                   child: Center(
                     child: GestureDetector(
-                      onTap: () {
-                        WatchBridgeFunctions.watchTVBridge(
-                          watchTV: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => LiveTvsPlayerScreen(
-                                  name: "${widget.data['name']}",
-                                  streamKey: widget.data['stream_key'],
-                                ),
-                              ),
-                            );
-                          },
-                          contentName: widget.data['name'],
-                          thumbnail: widget.data['thumb_nail'],
-                          price: widget.data['price'],
-                          packages: [
-                            "KanemaSupa",
-                            "Kiliye Kiliye",
-                            widget.data['name']
-                          ],
-                          isPublished: widget.data['status']['publish'],
-                        );
-                      },
+                      onTap: () {},
                       child: SvgPicture.asset(
                         "assets/svg/play_special.svg",
                         width: 60,

@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/live_events_provider.dart';
-import 'package:kanemaonline/providers/vods_provider.dart';
-import 'package:kanemaonline/screens/players/video_player.dart';
+import 'package:kanemaonline/widgets/miniplayer/video_player_mini_player.dart';
 import 'package:kanemaonline/widgets/trending_list_sm_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +22,7 @@ class _SingleEventDetailsState extends State<SingleEventDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: GestureDetector(
@@ -47,14 +46,59 @@ class _SingleEventDetailsState extends State<SingleEventDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHero(),
+            _buildMiniPlayer(),
+            // _buildHero(),
             _buildTimeAndLocation(),
-            _buildPlayButton(),
+            // _buildPlayButton(),
             _buildDescription(),
             _buildActions(),
             _buildRelatedEvents(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildMiniPlayer() {
+    return Container(
+      color: black,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top,
+              bottom: 10,
+            ),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: MiniVideoPlayer(
+                videoUrl: widget.data['stream_key'],
+                title: widget.data['name'],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  widget.data['name'],
+                  style: TextStyle(
+                    color: white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 19,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -155,24 +199,25 @@ class _SingleEventDetailsState extends State<SingleEventDetails> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: GestureDetector(
         onTap: () {
-          WatchBridgeFunctions.watchLiveBridge(
-            watchLive: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => VideoPlayerScreen(
-                    title: widget.data['name'],
-                    videoUrl: widget.data['stream_key'],
-                  ),
-                ),
-              );
-            },
-            packages: ["Kanema Events", "KanemaSupa", widget.data['name']],
-            contentName: widget.data['name'],
-            thumbnail: widget.data['thumb_nail'],
-            price: widget.data['price'],
-            isPublished: widget.data['status']['publish'],
-          );
+          // WatchBridgeFunctions.watchLiveBridge(
+          //   watchLive: () {
+          //     Navigator.push(
+          //       context,
+          //       CupertinoPageRoute(
+          //         builder: (context) => VideoPlayerScreen(
+          //           title: widget.data['name'],
+          //           videoUrl: widget.data['stream_key'],
+          //           duration: 0,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          //   packages: ["Kanema Events", "KanemaSupa", widget.data['name']],
+          //   contentName: widget.data['name'],
+          //   thumbnail: widget.data['thumb_nail'],
+          //   price: widget.data['price'],
+          //   isPublished: widget.data['status']['publish'] ?? false,
+          // );
         },
         child: Container(
           padding: const EdgeInsets.symmetric(

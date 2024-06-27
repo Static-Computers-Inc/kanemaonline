@@ -3,12 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:kanemaonline/api/payment_api.dart';
 import 'package:kanemaonline/data/countries.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
-import 'package:kanemaonline/helpers/fx/url_launcher.dart';
 import 'package:kanemaonline/providers/auth_provider.dart';
 import 'package:kanemaonline/screens/browser/browser_screen.dart';
 import 'package:kanemaonline/screens/generics/choose_country_popup.dart';
@@ -169,29 +167,31 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
       ),
       body: isPaymentLoading
           ? const CustomIndicatorWidget()
-          : Column(
-              children: [
-                const SizedBox(height: 20),
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    child: Image.asset(
-                      "assets/images/logo-white.png",
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      child: Image.asset(
+                        "assets/images/logo-white.png",
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 15),
-                Text(
-                  "Choose your payment method",
-                  style: TextStyle(
-                    color: white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 15),
+                  Text(
+                    "Choose your payment method",
+                    style: TextStyle(
+                      color: white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                _buildTabBar(),
-                _buildProcessorSelector(),
-              ],
+                  _buildTabBar(),
+                  _buildProcessorSelector(),
+                ],
+              ),
             ),
     );
   }

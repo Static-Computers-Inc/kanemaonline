@@ -5,11 +5,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
-import 'package:kanemaonline/screens/details_pages/live_tv_details.dart';
 import 'package:kanemaonline/screens/livetv/all_tvs_search_screen.dart';
-import 'package:kanemaonline/screens/players/live_tvs_player.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
 import 'package:kanemaonline/widgets/hero_search_appbar.dart';
 import 'package:kanemaonline/widgets/scaffold_wrapper.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class LiveTVScreen extends StatefulWidget {
@@ -76,30 +76,31 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
+                                    var data = value.tvs[index];
                                     WatchBridgeFunctions.watchTVBridge(
-                                      contentName: value.tvs[index]['name'],
-                                      price: value.tvs[index]['price'],
+                                      id: data['_id'],
                                       watchTV: () {
-                                        Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                            builder: (context) =>
-                                                LiveTvsPlayerScreen(
-                                              name: value.tvs[index]['name'],
-                                              streamKey: value.tvs[index]
-                                                  ['stream_key'],
-                                            ),
+                                        showCupertinoModalBottomSheet(
+                                          topRadius: Radius.zero,
+                                          context: context,
+                                          backgroundColor: black,
+                                          barrierColor: black,
+                                          builder: (context) => MiniPlayerPopUp(
+                                            title: data['name'],
+                                            videoUrl: data['stream_key'],
+                                            data: data,
                                           ),
                                         );
                                       },
                                       packages: [
-                                        'Kiliye Kiliye',
-                                        'KanemaSupa',
-                                        value.tvs[index]['name'],
+                                        "Kiliye Kiliye",
+                                        "KanemaSupa",
+                                        data['name']
                                       ],
-                                      thumbnail: value.tvs[index]['thumb_nail'],
-                                      isPublished: value.tvs[index]['status']
-                                          ['publish'],
+                                      contentName: data['name'],
+                                      thumbnail: data['thumb_nail'],
+                                      price: data['price'],
+                                      isPublished: data['status']['publish'],
                                     );
                                   },
                                   child: SvgPicture.asset(
@@ -151,13 +152,31 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                           // }
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => SingleTVDetails(
-                                    data: tvsProvider.tvs[index],
-                                  ),
-                                ),
+                              var data = tvsProvider.tvs[index];
+                              WatchBridgeFunctions.watchTVBridge(
+                                id: data['_id'],
+                                watchTV: () {
+                                  showCupertinoModalBottomSheet(
+                                    topRadius: Radius.zero,
+                                    context: context,
+                                    backgroundColor: black,
+                                    barrierColor: black,
+                                    builder: (context) => MiniPlayerPopUp(
+                                      title: data['name'],
+                                      videoUrl: data['stream_key'],
+                                      data: data,
+                                    ),
+                                  );
+                                },
+                                packages: [
+                                  "Kiliye Kiliye",
+                                  "KanemaSupa",
+                                  data['name']
+                                ],
+                                contentName: data['name'],
+                                thumbnail: data['thumb_nail'],
+                                price: data['price'],
+                                isPublished: data['status']['publish'],
                               );
                             },
                             child: Stack(
@@ -169,7 +188,8 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                                     image: DecorationImage(
                                       fit: BoxFit.fitWidth,
                                       image: CachedNetworkImageProvider(
-                                          tvsProvider.tvs[index]['thumb_nail']),
+                                        tvsProvider.tvs[index]['thumb_nail'],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -179,17 +199,20 @@ class _LiveTVScreenState extends State<LiveTVScreen> {
                                   right: 0,
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 15),
+                                      horizontal: 10,
+                                      vertical: 15,
+                                    ),
                                     decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                      colors: [
-                                        black.withOpacity(1),
-                                        black.withOpacity(0.7),
-                                        black.withOpacity(0.0),
-                                      ],
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                    )),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          black.withOpacity(1),
+                                          black.withOpacity(0.7),
+                                          black.withOpacity(0.0),
+                                        ],
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                      ),
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

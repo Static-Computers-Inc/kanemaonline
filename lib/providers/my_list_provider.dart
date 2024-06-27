@@ -14,6 +14,8 @@ class MyListProvider with ChangeNotifier {
   List<dynamic> _myList = [];
   List<dynamic> get myList => _myList;
 
+  get trends => null;
+
   Future<bool> checkIfInMyList({required String name}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String encodedList = prefs.getString("myList") ?? "[]";
@@ -73,21 +75,14 @@ class MyListProvider with ChangeNotifier {
     for (var element in cloudList) {
       if (element != "") {
         var content = await MyListAPI().getItemByID(id: element.toString());
-        if (content.isNotEmpty) {
+        if (content != {}) {
           contents.add(content);
         }
       }
     }
 
-    debugPrint(contents.toString());
-
-    //get the missing items
-    // for (var element in missingIDs) {
-    //   await MyListAPI().getItemByID(id: element['id'].toString());
-    //   debugPrint('was not found $element');
-    // }
-
-    // _myList = decodedList;
+    _myList = contents;
+    _isListLoading = false;
     notifyListeners();
   }
 }

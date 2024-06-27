@@ -23,7 +23,7 @@ class _HelpScreenState extends State<HelpScreen> {
           children: [
             ListTile(
               onTap: () {
-                LaunchUrl.launch(helpCenterURL);
+                LaunchUrlHelper.launch(helpCenterURL);
               },
               title: const Text(
                 "Help Centre",
@@ -41,13 +41,13 @@ class _HelpScreenState extends State<HelpScreen> {
                 //     ),
                 //   ),
                 // );
-                LaunchUrl.launch(termsPolicyURL);
+                LaunchUrlHelper.launch(termsPolicyURL);
               },
               title: const Text("Terms of use"),
             ),
             ListTile(
               onTap: () {
-                LaunchUrl.launch(privacyPolicyURL);
+                LaunchUrlHelper.launch(privacyPolicyURL);
               },
               title: const Text("Privacy Policy"),
             ),

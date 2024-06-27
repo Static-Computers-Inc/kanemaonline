@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +12,9 @@ import 'package:kanemaonline/providers/packages_provider.dart';
 import 'package:kanemaonline/providers/trending_provider.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
 import 'package:kanemaonline/providers/user_info_provider.dart';
+import 'package:kanemaonline/providers/video_controller_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
+import 'package:kanemaonline/providers/watchlist_provider.dart';
 import 'package:kanemaonline/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:statusbarz/statusbarz.dart';
@@ -26,6 +26,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => VideoControllerProvider()),
         ChangeNotifierProvider(create: (_) => TVsProvider()..init()),
         ChangeNotifierProvider(
           create: (_) => TrendingProvider()..getAllTrends(),
@@ -39,8 +40,9 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => PackagesProvider()..getPackages(),
         ),
-        ChangeNotifierProvider(create: (_) => MyListProvider()),
-        ChangeNotifierProvider(create: (_) => NavigationBarProvider())
+        ChangeNotifierProvider(create: (_) => MyListProvider()..init()),
+        ChangeNotifierProvider(create: (_) => NavigationBarProvider()),
+        ChangeNotifierProvider(create: (_) => WatchListProvider()..init())
       ],
       child: const MyApp(),
     ),
@@ -80,6 +82,13 @@ class _MyAppState extends State<MyApp> {
         themeMode: ThemeMode.dark,
         builder: (context, child) {
           child = botToastBuilder(context, child);
+          child = GestureDetector(
+            onTap: () {
+              Focus.of(context).unfocus();
+            },
+            child: child,
+          );
+
           return child;
         },
         navigatorObservers: [
@@ -104,17 +113,18 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           listTileTheme: ListTileThemeData(
-              titleTextStyle: TextStyle(
-                color: white,
-                fontFamily: "Urbanist",
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-              ),
-              subtitleTextStyle: TextStyle(
-                color: darkGrey,
-                fontWeight: FontWeight.w600,
-                fontFamily: "Urbanist",
-              )),
+            titleTextStyle: TextStyle(
+              color: white,
+              fontFamily: "Urbanist",
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
+            ),
+            subtitleTextStyle: TextStyle(
+              color: darkGrey,
+              fontWeight: FontWeight.w600,
+              fontFamily: "Urbanist",
+            ),
+          ),
         ),
         home: const Wrapper(),
       ),

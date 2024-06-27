@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:kanemaonline/helpers/constants/colors.dart';
 import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
@@ -11,18 +10,16 @@ import 'package:kanemaonline/providers/navigation_bar_provider.dart';
 import 'package:kanemaonline/providers/trending_provider.dart';
 import 'package:kanemaonline/providers/tvs_provider.dart';
 import 'package:kanemaonline/providers/vods_provider.dart';
-import 'package:kanemaonline/screens/details_pages/live_event_details.dart';
-import 'package:kanemaonline/screens/details_pages/live_tv_details.dart';
-import 'package:kanemaonline/screens/details_pages/single_video_details.dart';
 
-import 'package:kanemaonline/screens/players/live_tvs_player.dart';
-import 'package:kanemaonline/screens/players/video_player.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
+
 import 'package:kanemaonline/screens/search/search_all_screen.dart';
 import 'package:kanemaonline/widgets/activity_loading_widget.dart';
 import 'package:kanemaonline/widgets/error_widget.dart';
 import 'package:kanemaonline/widgets/hero_search_appbar.dart';
 import 'package:kanemaonline/widgets/hero_widget.dart';
 import 'package:kanemaonline/widgets/scaffold_wrapper.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -96,22 +93,34 @@ class _HomeScreenState extends State<HomeScreen> {
     required Map<dynamic, dynamic> mediaInfo,
   }) {
     return HeroWidget(
-      itemId: mediaInfo['_id'],
+      itemId: mediaInfo['id'],
       imageUrl: imageUrl,
       playAction: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => VideoPlayerScreen(
-              videoUrl: mediaInfo['stream_key'],
-              title: mediaInfo['name'],
-            ),
-          ),
+        WatchBridgeFunctions.watchVideoBridge(
+          id: mediaInfo['id'],
+          watchVideo: () {
+            showCupertinoModalBottomSheet(
+              topRadius: Radius.zero,
+              backgroundColor: black,
+              barrierColor: black,
+              context: context,
+              builder: (context) => MiniPlayerPopUp(
+                title: mediaInfo['name'],
+                videoUrl: mediaInfo['stream_key'],
+                data: mediaInfo,
+              ),
+            );
+          },
+          packages: ["Kiliye Kiliye", "KanemaSupa", mediaInfo['name']],
+          contentName: mediaInfo['name'],
+          thumbnail: mediaInfo['thumb_nail'],
+          price: mediaInfo['price'] ?? 100,
+          isPublished: mediaInfo['status']['publish'] ?? false,
         );
       },
       myListAction: () {
         Provider.of<MyListProvider>(context, listen: false).addToMyList(
-          id: mediaInfo['_id'],
+          id: mediaInfo['id'],
           name: mediaInfo['name'],
           description: mediaInfo['description'],
           thumbnail: mediaInfo['thumb_nail'],
@@ -151,38 +160,93 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               itemCount: value.trends.length >= 5 ? 5 : value.trends.length,
               itemBuilder: (context, index) {
+                var mediaInfo = value.trends[index];
                 return Row(
                   children: [
                     if (index == 0) const SizedBox(width: 15),
                     GestureDetector(
                       onTap: () {
-                        if (value.trends[index]['category'] == 'event') {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SingleEventDetails(
-                                data: value.trends[index],
-                              ),
-                            ),
+                        if (value.trends[index]['category'] == 'events') {
+                          WatchBridgeFunctions.watchLiveBridge(
+                            id: value.trends[index]['id'],
+                            watchLive: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "KanemaSupa",
+                              "KanemaEvents",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
                           );
                         } else if (value.trends[index]['category'] ==
                             "live_tv") {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SingleTVDetails(
-                                data: value.trends[index],
-                              ),
-                            ),
+                          WatchBridgeFunctions.watchTVBridge(
+                            id: value.trends[index]['id'],
+                            watchTV: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "Kiliye Kiliye",
+                              "KanemaSupa",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
                           );
                         } else {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SingleVideoDetails(
-                                data: value.trends[index],
-                              ),
-                            ),
+                          WatchBridgeFunctions.watchLiveBridge(
+                            id: mediaInfo['id'],
+                            watchLive: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "Kiliye Kiliye",
+                              "KanemaEvents",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
                           );
                         }
                       },
@@ -309,13 +373,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (index == 0) const SizedBox(width: 15),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SingleTVDetails(
-                                data: value.tvs[index],
-                              ),
-                            ),
+                          var mediaInfo = value.tvs[index];
+                          WatchBridgeFunctions.watchTVBridge(
+                            id: mediaInfo['_id'],
+                            watchTV: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "Kanema",
+                              "KanemaSupa",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
                           );
                         },
                         child: AspectRatio(
@@ -443,13 +526,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (index == 0) const SizedBox(width: 15),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SingleVideoDetails(
-                                data: value.vods[index],
-                              ),
-                            ),
+                          var mediaInfo = value.vods[index];
+                          WatchBridgeFunctions.watchVideoBridge(
+                            id: mediaInfo['_id'],
+                            watchVideo: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "KanemaSupa",
+                              "KanemaFlex",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
                           );
                         },
                         child: AspectRatio(
@@ -530,7 +632,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Events",
+                  "Live Events",
                   style: TextStyle(
                     color: white,
                     fontSize: 17,
@@ -572,13 +674,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (index == 0) const SizedBox(width: 15),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SingleEventDetails(
-                                data: value.events[index],
-                              ),
-                            ),
+                          var mediaInfo = value.events[index];
+                          WatchBridgeFunctions.watchLiveBridge(
+                            id: mediaInfo['_id'],
+                            watchLive: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "KiliyeEvents",
+                              "KanemaSupa",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
                           );
                         },
                         child: AspectRatio(

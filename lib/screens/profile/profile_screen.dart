@@ -1,12 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kanemaonline/helpers/constants/colors.dart';
+import 'package:kanemaonline/helpers/fx/betterlogger.dart';
+import 'package:kanemaonline/helpers/fx/url_launcher.dart';
+import 'package:kanemaonline/helpers/fx/watch_bridge_functions.dart';
 import 'package:kanemaonline/providers/my_list_provider.dart';
 import 'package:kanemaonline/providers/user_info_provider.dart';
+import 'package:kanemaonline/providers/watchlist_provider.dart';
+import 'package:kanemaonline/screens/players/mini_player_popup.dart';
 import 'package:kanemaonline/screens/screens.dart';
-import 'package:kanemaonline/screens/tests_screen.dart';
 import 'package:kanemaonline/services/auth_service.dart';
 import 'package:kanemaonline/wrapper.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -19,7 +25,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     init();
   }
@@ -87,11 +92,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Icon(
-                        CupertinoIcons.pen,
-                        color: white,
-                        size: 13,
-                      )
+                      // Icon(
+                      //   CupertinoIcons.pen,
+                      //   color: white,
+                      //   size: 13,
+                      // )
                     ],
                   ),
                 );
@@ -100,15 +105,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-                height: 0.6,
-                color: white.withOpacity(0.2),
-              ),
+              _divider(),
+//// account actions
 
-              //// account actions
               ListTile(
+                dense: true,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -137,6 +138,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               ListTile(
+                // contentPadding: EdgeInsets.zero,
+                dense: true,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -164,7 +167,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
+              //// account actions
               ListTile(
+                dense: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => const HelpScreen(),
+                    ),
+                  );
+                },
+                leading: const Icon(CupertinoIcons.person),
+                title: Text(
+                  "Help",
+                  style: TextStyle(
+                    color: white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  "Help center, contact us, privacy policy",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: white.withOpacity(0.4),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
+              ListTile(
+                dense: true,
                 onTap: () async {
                   await AuthService.signout(context: context);
                   Navigator.popUntil(context, (route) => route.isFirst);
@@ -194,10 +228,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.1,
-              ),
-
               // GestureDetector(
               //   onTap: () {
               //     Navigator.push(
@@ -208,12 +238,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               //     );
               //   },
               //   child: Text(
-              //     "Test Screen",
+              //     "test screem",
               //     style: TextStyle(
               //       color: white,
               //     ),
               //   ),
               // ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.01,
+              ),
+              _divider(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.025,
+              ),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -242,22 +279,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(35.0),
-                  child: Text(
-                    "TVs, shows and events you watch, will show up here",
-                    style: TextStyle(
-                      color: white.withOpacity(0.4),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+                child:
+                    Consumer<WatchListProvider>(builder: (context, value, _) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: List.generate(
+                          value.myList.length,
+                          (index) => AspectRatio(
+                            aspectRatio: 1 / 1,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 3),
+                              decoration: BoxDecoration(
+                                color: darkAccent,
+                                borderRadius: BorderRadius.circular(8),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(
+                                    value.myList[index]['thumb_nail'],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                  );
+                }),
               ),
+              // Center(
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(35.0),
+              //     child: Text(
+              //       "TVs, shows and events you watch, will show up here",
+              //       style: TextStyle(
+              //         color: white.withOpacity(0.4),
+              //       ),
+              //       textAlign: TextAlign.center,
+              //     ),
+              //   ),
+              // ),
+
+              _divider(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+              _buildMoreFrom(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.2),
             ],
           ),
         );
       }),
+    );
+  }
+
+  Widget _divider() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+      height: 0.6,
+      color: white.withOpacity(0.2),
     );
   }
 
@@ -278,12 +365,211 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       } else {
-        return Container(
-          color: white,
-          height: 30,
-          width: 30,
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.15,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: Row(
+                children: List.generate(
+                  value.myList.length,
+                  (index) => AspectRatio(
+                    aspectRatio: 1 / 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        Map<dynamic, dynamic> mediaInfo = value.myList[index];
+                        if (mediaInfo['category'] == 'events') {
+                          WatchBridgeFunctions.watchLiveBridge(
+                            id: mediaInfo['_id'],
+                            watchLive: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "KanemaSupa",
+                              "KanemaEvents",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
+                          );
+                        } else if (mediaInfo['category'] == "live_tv") {
+                          WatchBridgeFunctions.watchTVBridge(
+                            id: mediaInfo['_id'],
+                            watchTV: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "Kiliye Kiliye",
+                              "KanemaSupa",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
+                          );
+                        } else {
+                          WatchBridgeFunctions.watchLiveBridge(
+                            id: mediaInfo['_id'],
+                            watchLive: () {
+                              showCupertinoModalBottomSheet(
+                                topRadius: Radius.zero,
+                                backgroundColor: black,
+                                barrierColor: black,
+                                context: context,
+                                builder: (context) => MiniPlayerPopUp(
+                                  title: mediaInfo['name'],
+                                  videoUrl: mediaInfo['stream_key'],
+                                  data: mediaInfo,
+                                ),
+                              );
+                            },
+                            packages: [
+                              "Kiliye Kiliye",
+                              "KanemaEvents",
+                              mediaInfo['name']
+                            ],
+                            contentName: mediaInfo['name'],
+                            thumbnail: mediaInfo['thumb_nail'],
+                            price: mediaInfo['price'] ?? 100,
+                            isPublished:
+                                mediaInfo['status']['publish'] ?? false,
+                          );
+                        }
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        decoration: BoxDecoration(
+                          color: darkAccent,
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: CachedNetworkImageProvider(
+                              value.myList[index]['thumb_nail'],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         );
       }
     });
+  }
+
+  Widget _buildMoreFrom() {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "Also From ",
+                  style: TextStyle(
+                    color: white.withOpacity(
+                      0.5,
+                    ),
+                  ),
+                ),
+                const TextSpan(
+                    text: " Static Computers Inc",
+                    style:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+              ],
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                fontFamily: "Urbanist",
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          ListTile(
+            onTap: () {
+              LaunchUrlHelper.launch("https://nkhani.app");
+            },
+            leading: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.1,
+              child: AspectRatio(
+                aspectRatio: 1 / 1,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        "assets/images/kanemanews.png",
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              "Kanema News",
+              style: TextStyle(
+                color: white,
+              ),
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              LaunchUrlHelper.launch("https://katswiri.com");
+            },
+            leading: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.1,
+              child: AspectRatio(
+                aspectRatio: 1 / 1,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        "assets/images/katswiri.png",
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              "Katswiri",
+              style: TextStyle(
+                color: white,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

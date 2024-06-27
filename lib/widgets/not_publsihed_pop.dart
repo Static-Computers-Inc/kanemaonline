@@ -35,18 +35,24 @@ class _NotPublisedPopupState extends State<NotPublisedPopup> {
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 25),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: black,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Center(
-                  child: Text(
-                    "Ok",
-                    style: TextStyle(color: white, fontWeight: FontWeight.w700),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: black,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Ok",
+                      style:
+                          TextStyle(color: white, fontWeight: FontWeight.w700),
+                    ),
                   ),
                 ),
               ),
